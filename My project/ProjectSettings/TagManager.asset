@@ -3,20 +3,24 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Interactable
+  - InventorySlot
+  - Enemy
+  - InventoryPanel
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - PostProcessing
+  - Interaction
+  - Environment
+  - Obstacle
+  - Bullet
+  - Enemy
   - 
   - 
   - 

@@ -4,5 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
-  m_configObjects: {}
+  m_Scenes:
+  - enabled: 1
+    path: Assets/HORROR SYSTEM/HS Assets/Scenes/Menu_Scene.unity
+    guid: 9e82a0b9ab9501a4b82ab12eea02e492
+  - enabled: 1
+    path: Assets/HORROR SYSTEM/HS Assets/Scenes/Demo_Scene.unity
+    guid: d4c97781f44efb84db0822985041b934
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 5394f581e496a94499b3f83cf9972e3b, type: 3}
