@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/HORROR SYSTEM/HS Assets/Scenes/Demo_Scene.unity
     guid: d4c97781f44efb84db0822985041b934
+  - enabled: 1
+    path: Assets/HORROR SYSTEM/HS Assets/Scenes/Proximamente.unity
+    guid: 2c60c64e37a66934a8cfed0da9bf09b4
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 5394f581e496a94499b3f83cf9972e3b, type: 3}
