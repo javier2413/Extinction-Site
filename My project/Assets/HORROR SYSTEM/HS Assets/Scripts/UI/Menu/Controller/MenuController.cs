@@ -9,6 +9,9 @@ using UnityEditor;
 
 public class MenuController : MonoBehaviour
 {
+    [Header("Logo")]
+    public RawImage gameLogo; //referencing the RawImage of the Logo
+
     [Header("Main Menu")]
     public GameObject mainPanel;
     public string nextSceneName;
@@ -79,6 +82,8 @@ public class MenuController : MonoBehaviour
     public void ShowMenu()
     {
         mainPanel.SetActive(true);
+        if (gameLogo != null)
+            gameLogo.gameObject.SetActive(true);
     }
 
     private void ChangeScene()
@@ -109,6 +114,10 @@ public class MenuController : MonoBehaviour
             mainPanel.SetActive(false);
             settingPanel.SetActive(true);
             controlPanel.SetActive(true);
+
+            if (gameLogo != null)
+                gameLogo.gameObject.SetActive(false);
+            //to hide the logo so that it wont clutter the settings menu space
         });
     }
 
@@ -163,6 +172,10 @@ public class MenuController : MonoBehaviour
             controlPanel.SetActive(false);
             audioPanel.SetActive(false);
             graphicsPanel.SetActive(false);
+
+            if (gameLogo != null)
+                gameLogo.gameObject.SetActive(true);
+            //to show the logo again
         });
     }
 }

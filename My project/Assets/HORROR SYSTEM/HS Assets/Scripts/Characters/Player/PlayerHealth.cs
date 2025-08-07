@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class PlayerHealth : MonoBehaviour
     public Color healthColorMax = Color.green;
     public Color healthColorMiddle = Color.yellow;
     public Color healthColorMin = Color.red;
+
+    public GameObject GOCanvas;
 
     private bool isPlayerDead = false;
     private PlayerAnimations playerAnimations;
@@ -76,6 +79,15 @@ public class PlayerHealth : MonoBehaviour
         isPlayerDead = true;
         playerAnimations.SetDeath();
         playerAnimations.ResetRigWeights();
+
+        // Show Game Over canvas
+        if (GOCanvas != null)
+        {
+            GOCanvas.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 0f; // only use of u want to pause the game
+        }
     }
 
     public bool IsPlayerDead()

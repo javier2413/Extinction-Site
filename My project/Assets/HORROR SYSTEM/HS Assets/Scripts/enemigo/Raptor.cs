@@ -7,19 +7,23 @@ public class Raptor : MonoBehaviour
 {
     public NavMeshAgent agent;
     public GameObject Player;
-    public GameObject GOCanvas;
+    
 
     public float RadioDeteccion;
     public float AnguloFOV;
     public float VisionPerdida;
     public float moveRadious;
     bool SiguiendoJugador;
+    public float rotationSpeed = 5f; // para la rotación por que no quiere rotar
+
 
     public LayerMask playerLayer;
     public LayerMask ObscructionLayer;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.updateRotation = false;  // desactivar rotación automatica
         Patrullaje();
     }
 
@@ -35,6 +39,7 @@ public class Raptor : MonoBehaviour
         if (SiguiendoJugador)
         {
             agent.destination = Player.transform.position;
+            RotateTowardsPlayer();  // para que rote manualmente
         }
 
 
@@ -49,8 +54,6 @@ public class Raptor : MonoBehaviour
     {
 
         Vector3 directionToPlayer = (Player.transform.position - transform.position).normalized;
-
-
         float AngleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
 
@@ -66,7 +69,7 @@ public class Raptor : MonoBehaviour
                 if (distanceToPlayer <= RadioDeteccion)
                 {
 
-                    Debug.Log("abuelita vio a Player");
+                    Debug.Log("Dino vio a Player");
 
                     SiguiendoJugador = true;
                 }
@@ -102,6 +105,17 @@ public class Raptor : MonoBehaviour
         SiguiendoJugador = false;
     }
 
+    private void RotateTowardsPlayer()
+    {
+        Vector3 direction = (Player.transform.position - transform.position).normalized;
+        direction.y = 0f; // solo rotacion horizontal, nada de vertical
+
+        if (direction.magnitude > 0)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+        }
+    }
 
     private void OnDrawGizmos()
     {
@@ -128,8 +142,6 @@ public class Raptor : MonoBehaviour
 
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-
-            GOCanvas.SetActive(true);
 
             Destroy(collision.gameObject);
         }

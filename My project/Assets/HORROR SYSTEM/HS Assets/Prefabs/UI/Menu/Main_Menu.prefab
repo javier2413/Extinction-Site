@@ -14750,7 +14750,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8304221024545129825}
   - component: {fileID: 848544075625510603}
-  - component: {fileID: 3413354114356789193}
   m_Layer: 5
   m_Name: Main_Menu
   m_TagString: Untagged
@@ -14879,33 +14878,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3413354114356789193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8835463825940112533}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c09dcca96bc24a54c856f55c120589cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainPanel: {fileID: 4895681482249129466}
-  nextSceneName: Demo_Scene
-  changeSceneButton: {fileID: 235008348235601239}
-  settingsButton: {fileID: 5825360847374773971}
-  exitGameButton: {fileID: 6225671566473932735}
-  settingPanel: {fileID: 8707656604391376761}
-  controlSettingsButton: {fileID: 3961570748440860306}
-  audioSettingsButton: {fileID: 1970016547013114863}
-  graphicsSettingsButton: {fileID: 1024518587916517694}
-  backToMainMenuButton: {fileID: 1764437809872693926}
-  controlPanel: {fileID: 4388425187866698645}
-  audioPanel: {fileID: 643068676151688114}
-  graphicsPanel: {fileID: 8435205899656090309}
-  blackScreenCanvasGroup: {fileID: 6985658553862671180}
-  fadeDuration: 2
 --- !u!1 &8925454248707009398
 GameObject:
   m_ObjectHideFlags: 0
