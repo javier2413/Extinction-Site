@@ -7,7 +7,7 @@ public class Raptor : MonoBehaviour
 {
     public NavMeshAgent agent;
     public GameObject Player;
-    
+    public GameObject GOCanvas;
 
     public float RadioDeteccion;
     public float AnguloFOV;
@@ -142,6 +142,7 @@ public class Raptor : MonoBehaviour
 
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
+            GOCanvas.SetActive(true);
 
             Destroy(collision.gameObject);
         }
