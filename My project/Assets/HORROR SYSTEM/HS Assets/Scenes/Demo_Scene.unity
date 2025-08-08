@@ -70005,10 +70005,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 834632817416203089, guid: b6bbf7f369dea384bb90d497b4ccdef7, type: 3}
       propertyPath: m_text
-      value: "\xA1Demonios!. Se escaparon, !les dije que era una mala idea! Todo
-        es un desastre... Esos sonidos... \xA1esos gru\xF1idos! No s\xE9 cu\xE1nto
-        m\xE1s podr\xE9 aguantar. Si alguien encuentra esta nota...\r\n\r\nCorran.\r\n\r\nNo
-        intenten enfrentarse a ellos.\r\n"
+      value: "Demonios!. Se escaparon. Les dije que era una mala idea! Todo es un
+        desastre, esos sonidos, Esos gru\xF1idos! No s\xE9 cu\xE1nto m\xE1s podr\xE9
+        aguantar. Si alguien encuentra esta nota.\n\r\nCorran.\r\n\r\nNo intenten
+        enfrentarse a ellos.\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 1148918685913412270, guid: b6bbf7f369dea384bb90d497b4ccdef7, type: 3}
       propertyPath: m_Pivot.x
