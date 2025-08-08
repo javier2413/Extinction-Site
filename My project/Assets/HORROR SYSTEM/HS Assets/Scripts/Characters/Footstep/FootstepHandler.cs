@@ -33,20 +33,6 @@ public class FootstepHandler : MonoBehaviour
         }
     }
 
-    public void PlayFootstep()
-    {
-        Texture2D surfaceTexture = GetSurfaceTexture();
-
-        if (surfaceTexture != null && footstepGroupsByTexture.ContainsKey(surfaceTexture))
-        {
-            var group = footstepGroupsByTexture[surfaceTexture];
-
-            int randomIndex = Random.Range(0, group.audioClips.Length);
-            footstepAudioSource.clip = group.audioClips[randomIndex];
-            footstepAudioSource.volume = group.footstepVolume;
-            footstepAudioSource.Play();
-        }
-    }
 
     private Texture2D GetSurfaceTexture()
     {

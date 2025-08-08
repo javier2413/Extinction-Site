@@ -60,33 +60,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Weapon1",
-                    "type": "Button",
-                    "id": "da12fdb3-57a9-410b-b5af-c508b07fab9d",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Weapon2",
-                    "type": "Button",
-                    "id": "2809ef59-cdd3-4e4e-82b9-c941d7dc426d",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Reload",
-                    "type": "Button",
-                    "id": "e73cbcd6-1572-441f-9eab-53e6c0c601a2",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Flashlight",
                     "type": "Button",
                     "id": "a8a1850e-97b4-4859-9dbd-8189ee2c1c3c",
@@ -225,34 +198,12 @@
                 },
                 {
                     "name": "",
-                    "id": "3b4d540c-e764-4e45-9cca-c909664bcea4",
-                    "path": "<Keyboard>/1",
+                    "id": "ce2c494c-060a-4be7-acb1-f604399a003a",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": ";PC",
-                    "action": "Weapon1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0b3a8404-f738-4cae-901c-80d16ba5adbf",
-                    "path": "<Keyboard>/2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";PC",
-                    "action": "Weapon2",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4b3f4ecb-b644-4cdd-b970-ebd6bd27ea33",
-                    "path": "<Keyboard>/r",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";PC",
-                    "action": "Reload",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

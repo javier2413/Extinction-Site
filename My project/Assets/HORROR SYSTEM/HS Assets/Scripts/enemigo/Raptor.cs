@@ -19,19 +19,39 @@ public class Raptor : MonoBehaviour
 
     private bool SiguiendoJugador = false;
     private Animator animator;
+    private PlayerHealth playerHealth;
+    private AudioSource audioSource;
+
+    private bool isStunned = false;
+
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
-        agent.updateRotation = false;  // Manual rotation
+        playerHealth = GameObject.FindWithTag("Player").GetComponent<PlayerHealth>();
 
-        Patrol();  // Start patrolling
+        agent.updateRotation = false;
+        Patrol();
     }
 
     void Update()
     {
+
+        if (playerHealth != null && playerHealth.IsPlayerDead())
+        {
+            if (audioSource != null && audioSource.enabled)
+                audioSource.enabled = false;
+
+            agent.isStopped = true;
+            animator.SetBool("Run", false);
+            animator.SetBool("Walk", false);
+            return;
+        }
+
+
         if (Player)
         {
             DetectarJugador();
@@ -141,17 +161,23 @@ public class Raptor : MonoBehaviour
 
     public void Stun(float duration)
     {
-        // You probably want to stop NavMeshAgent movement and play stun animation here
+        if (isStunned) return; // Ignore if already stunned
+
+        isStunned = true;
         agent.isStopped = true;
-        animator.SetTrigger("Stun"); // assuming you have a stun animation trigger
+        animator.SetTrigger("Stun");
+
+        CancelInvoke(nameof(Unstun));  // Cancel any previous calls to Unstun
         Invoke(nameof(Unstun), duration);
     }
 
     void Unstun()
     {
+        isStunned = false;
         agent.isStopped = false;
         animator.ResetTrigger("Stun");
     }
+
 
     private void OnDrawGizmos()
     {

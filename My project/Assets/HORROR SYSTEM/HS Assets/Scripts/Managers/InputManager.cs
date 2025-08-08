@@ -22,9 +22,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] private string aiming = "Aiming";
     [SerializeField] private string backmenu = "Backmenu";
     [SerializeField] private string combat = "Combat";
-    [SerializeField] private string weapon1 = "Weapon1";
-    [SerializeField] private string weapon2 = "Weapon2";
-    [SerializeField] private string reload = "Reload";
+   
 
     private InputAction lookAction;
     private InputAction moveAction;
@@ -36,9 +34,7 @@ public class InputManager : MonoBehaviour
     private InputAction aimingAction;
     private InputAction backmenuAction;
     private InputAction combatAction;
-    private InputAction weapon1Action;
-    private InputAction weapon2Action;
-    private InputAction reloadAction;
+
 
     public Vector2 LookInput { get; private set; }
     public Vector2 MoveInput { get; private set; }
@@ -50,9 +46,7 @@ public class InputManager : MonoBehaviour
     public bool InventoryTriggered { get; private set; }
     public bool PauseTriggered { get; private set; }
     public bool FlashlightTriggered { get; private set; }
-    public bool Weapon1Triggered { get; private set; }
-    public bool Weapon2Triggered { get; private set; }
-    public bool ReloadTriggered { get; private set; }
+    
 
     private void Awake()
     {
@@ -90,9 +84,7 @@ public class InputManager : MonoBehaviour
         aimingAction = playerControls.FindActionMap(actionMapName).FindAction(aiming);
         backmenuAction = playerControls.FindActionMap(actionMapName).FindAction(backmenu);
         combatAction = playerControls.FindActionMap(actionMapName).FindAction(combat);
-        weapon1Action = playerControls.FindActionMap(actionMapName).FindAction(weapon1);
-        weapon2Action = playerControls.FindActionMap(actionMapName).FindAction(weapon2);
-        reloadAction = playerControls.FindActionMap(actionMapName).FindAction(reload);
+       
 
         RegisterInputActions();
     }
@@ -129,14 +121,7 @@ public class InputManager : MonoBehaviour
         flashlightAction.started += context => FlashlightTriggered = true;
         flashlightAction.canceled += context => FlashlightTriggered = false;
 
-        weapon1Action.started += context => Weapon1Triggered = true;
-        weapon1Action.canceled += context => Weapon1Triggered = false;
-
-        weapon2Action.started += context => Weapon2Triggered = true;
-        weapon2Action.canceled += context => Weapon2Triggered = false;
-
-        reloadAction.started += context => ReloadTriggered = true;
-        reloadAction.canceled += context => ReloadTriggered = false;
+        
     }
 
     private void EnableInputActions()
@@ -151,9 +136,7 @@ public class InputManager : MonoBehaviour
         backmenuAction.Enable();
         aimingAction.Enable();
         combatAction.Enable();
-        weapon1Action.Enable();
-        weapon2Action.Enable();
-        reloadAction.Enable();
+       
     }
 
     private void DisableInputActions()
@@ -168,9 +151,7 @@ public class InputManager : MonoBehaviour
         aimingAction.Disable();
         combatAction.Disable();
         backmenuAction.Disable();
-        weapon1Action.Disable();
-        weapon2Action.Disable();
-        reloadAction.Disable();
+      
     }
 
     public void SetInteractionTriggered(bool value)
@@ -196,21 +177,6 @@ public class InputManager : MonoBehaviour
     public void SetFlashlightTriggered(bool value)
     {
         FlashlightTriggered = value;
-    }
-
-    public void SetWeapon1Triggered(bool value)
-    {
-        Weapon1Triggered = value;
-    }
-
-    public void SetWeapon2Triggered(bool value)
-    {
-        Weapon2Triggered = value;
-    }
-
-    public void SetReloadTriggered(bool value)
-    {
-        ReloadTriggered = value;
     }
 
     public void ResetCombatValue()

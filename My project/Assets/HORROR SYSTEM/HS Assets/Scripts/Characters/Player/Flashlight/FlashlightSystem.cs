@@ -5,6 +5,7 @@ public class FlashlightSystem : MonoBehaviour
     [Header("Light")]
     public Light spotLight = null;
 
+
     [Header("Intensity Settings")]
     public int maxIntensity;
     public float currentIntensity;
@@ -16,19 +17,33 @@ public class FlashlightSystem : MonoBehaviour
     private void Start()
     {
         currentIntensity = maxIntensity;
-        spotLight.intensity = currentIntensity;
-        spotLight.enabled = false;
+        maxIntensity = 3;
+        if (spotLight == null)
+        {
+            Debug.LogError("spotLight is NOT assigned in inspector!");
+        }
+        else
+        {
+            Debug.Log("spotLight assigned: " + spotLight.name);
+            spotLight.intensity = currentIntensity;
+            spotLight.enabled = false;
+        }
     }
-
     private void Update()
     {
-        BatteryChange();
-    
+        //BatteryChange();
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            ToggleFlashlight(!spotLight.enabled);
+        }
+
         if (spotLight.enabled)
         {
             CheckForRaptorsInLight();
         }
     }
+
 
     void CheckForRaptorsInLight()
     {
@@ -47,12 +62,12 @@ public class FlashlightSystem : MonoBehaviour
 
                 if (angleToRaptor <= spotAngle)
                 {
-                    // Raptor is inside flashlight cone
-                    raptor.Stun(5f); // stun you gotta survive man
+                    raptor.Stun(5f); // Stun the raptor for 5 seconds
                 }
             }
         }
     }
+
 
     public void SetMaxIntensity()
     {
@@ -62,25 +77,31 @@ public class FlashlightSystem : MonoBehaviour
 
     public void ToggleFlashlight(bool isFlashlightOn)
     {
-        if (spotLight.enabled != isFlashlightOn)
-        {
-            spotLight.enabled = isFlashlightOn;
+        Debug.Log("ToggleFlashlight called. Turning flashlight " + (isFlashlightOn ? "ON" : "OFF"));
+        spotLight.enabled = isFlashlightOn;
 
-            if (isFlashlightOn)
-            {
-                BatteryChange();
-            }
+        if (isFlashlightOn)
+        {
+            BatteryChange();
+            spotLight.intensity = maxIntensity;  // reset intensity immediately on toggle on
+        }
+        else
+        {
+            spotLight.intensity = 0f;
         }
     }
 
     private void BatteryChange()
     {
         currentIntensity -= intensityChange * Time.deltaTime;
+        currentIntensity = Mathf.Clamp(currentIntensity, 0f, maxIntensity);
+
         spotLight.intensity = Mathf.Lerp(0f, maxIntensity, currentIntensity / maxIntensity);
 
-        if (currentIntensity < 0)
+        if (currentIntensity <= 0)
         {
-            currentIntensity = 0;
+            spotLight.enabled = false;
         }
     }
+
 }

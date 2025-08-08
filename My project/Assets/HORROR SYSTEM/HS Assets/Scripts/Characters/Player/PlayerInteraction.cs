@@ -20,6 +20,7 @@ public class PlayerInteraction : MonoBehaviour
     private GameObject currentObject;
     private Transform interactionPoint;
     private float interactionPointHeight = 1f;
+    public FlashlightSystem flashlightSystem;
 
     private void Start()
     {
@@ -34,6 +35,13 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
+        HandleInteraction();
+        IconPoint();
+
+        if (InventoryManager.instance.hasFlashlight && Input.GetKeyDown(KeyCode.F))
+        {
+            flashlightSystem.ToggleFlashlight(!flashlightSystem.spotLight.enabled);
+        }
         HandleInteraction();
         IconPoint();
     }

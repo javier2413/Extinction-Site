@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -21,10 +22,15 @@ public class PlayerHealth : MonoBehaviour
     public Color healthColorMiddle = Color.yellow;
     public Color healthColorMin = Color.red;
 
+    [Header("Blood Splatter")]
+    public GameObject bloodSplatterCanvas;
+    private Coroutine bloodCoroutine;
+
     public GameObject GOCanvas;
 
     private bool isPlayerDead = false;
     private PlayerAnimations playerAnimations;
+    public AudioSource ambientAudio, enemysfx,senosmuere;
 
     private void Start()
     {
@@ -53,6 +59,11 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (bloodCoroutine != null)
+            StopCoroutine(bloodCoroutine);
+
+        bloodCoroutine = StartCoroutine(ShowBloodSplatter());
+
         if (isPlayerDead) return;
 
         currentHealth -= damage;
@@ -74,7 +85,7 @@ public class PlayerHealth : MonoBehaviour
         return maxHealth;
     }
 
-    private void Die()
+    public void Die()
     {
         isPlayerDead = true;
         playerAnimations.SetDeath();
@@ -83,12 +94,16 @@ public class PlayerHealth : MonoBehaviour
         // Show Game Over canvas
         if (GOCanvas != null)
         {
+            ambientAudio.Stop();
+            enemysfx.Stop();
             GOCanvas.SetActive(true);
+            senosmuere.Play();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             Time.timeScale = 0f; // only use of u want to pause the game
         }
     }
+
 
     public bool IsPlayerDead()
     {
@@ -129,6 +144,16 @@ public class PlayerHealth : MonoBehaviour
         {
             healthText.color = healthColorMin;
             healthImage.color = healthColorMin;
+        }
+    }
+
+    private IEnumerator ShowBloodSplatter()
+    {
+        if (bloodSplatterCanvas != null)
+        {
+            bloodSplatterCanvas.SetActive(true);
+            yield return new WaitForSeconds(3f);
+            bloodSplatterCanvas.SetActive(false);
         }
     }
 }
