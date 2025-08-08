@@ -7,7 +7,7 @@ public class Raptor : MonoBehaviour
 {
     public NavMeshAgent agent;
     public GameObject Player;
-
+    public GameObject GOCanvas;
     public float RadioDeteccion;
     public float AnguloFOV;
     public float VisionPerdida;
@@ -193,5 +193,20 @@ public class Raptor : MonoBehaviour
 
         Gizmos.DrawRay(transform.position, leftBoundary * RadioDeteccion);
         Gizmos.DrawRay(transform.position, rightBoundary * RadioDeteccion);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+
+            GOCanvas.SetActive(true);
+
+            Destroy(collision.gameObject);
+        }
     }
 }
