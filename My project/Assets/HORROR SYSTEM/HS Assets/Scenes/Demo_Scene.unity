@@ -62992,7 +62992,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.24333334
+  m_VoxelSize: 0.093333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 1103548c80cc73c4ead5beae3ff84915, type: 2}
   m_BuildHeightMesh: 1
@@ -67691,6 +67691,18 @@ PrefabInstance:
       propertyPath: GOCanvas
       value: 
       objectReference: {fileID: 1941173342}
+    - target: {fileID: 7636214875635619801, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: rotationSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_Speed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_Acceleration
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -68974,6 +68986,10 @@ PrefabInstance:
     - target: {fileID: 7449593961547072431, guid: 3944e3199344e7643b7d6f123e8a5777, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559181423908224029, guid: 3944e3199344e7643b7d6f123e8a5777, type: 3}
+      propertyPath: lerpSpeed
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7585405085075115067, guid: 3944e3199344e7643b7d6f123e8a5777, type: 3}
       propertyPath: m_Layer

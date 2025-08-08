@@ -12,7 +12,7 @@ public class Raptor : MonoBehaviour
     public float AnguloFOV;
     public float VisionPerdida;
     public float moveRadious;
-    public float rotationSpeed = 5f;
+    public float rotationSpeed = 7f;
 
     public LayerMask playerLayer;
     public LayerMask ObscructionLayer;
@@ -61,7 +61,7 @@ public class Raptor : MonoBehaviour
         {
             agent.destination = Player.transform.position;
 
-            // Rotate to face the player directly when chasing
+           
             RotateTowardsPlayer();
 
             animator.SetBool("Run", true);
@@ -76,7 +76,6 @@ public class Raptor : MonoBehaviour
 
             agent.isStopped = false;
 
-            // Rotate towards movement direction while patrolling
             RotateTowards(agent.velocity.normalized);
 
             animator.SetBool("Run", false);
@@ -84,11 +83,10 @@ public class Raptor : MonoBehaviour
         }
 
         
-        if (agent.velocity.sqrMagnitude > 0.01f) // if agent is moving
+        if (agent.velocity.sqrMagnitude > 0.01f) 
         {
             Vector3 moveDirection = agent.velocity.normalized;
-            moveDirection.y = 0f; // keep horizontal rotation only
-
+            moveDirection.y = 0f; 
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
@@ -100,7 +98,7 @@ public class Raptor : MonoBehaviour
         Vector3 directionToPlayer = (Player.transform.position - transform.position).normalized;
         float AngleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
-        if (AngleToPlayer <= AnguloFOV / 2)  // FOV angle usually halved for proper cone check
+        if (AngleToPlayer <= AnguloFOV / 2)  
         {
             float distanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);
 
@@ -108,13 +106,12 @@ public class Raptor : MonoBehaviour
             {
                 if (distanceToPlayer <= RadioDeteccion)
                 {
-                    // Player seen
                     SiguiendoJugador = true;
-                    CancelInvoke(nameof(DejarSeguir)); // Cancel losing sight if still called
+                    CancelInvoke(nameof(DejarSeguir)); 
                 }
                 else if (SiguiendoJugador)
                 {
-                    // Lost sight, invoke stop chasing after delay
+                   
                     Invoke(nameof(DejarSeguir), VisionPerdida);
                 }
             }
@@ -161,13 +158,13 @@ public class Raptor : MonoBehaviour
 
     public void Stun(float duration)
     {
-        if (isStunned) return; // Ignore if already stunned
+        if (isStunned) return; 
 
         isStunned = true;
         agent.isStopped = true;
         animator.SetTrigger("Stun");
 
-        CancelInvoke(nameof(Unstun));  // Cancel any previous calls to Unstun
+        CancelInvoke(nameof(Unstun));
         Invoke(nameof(Unstun), duration);
     }
 
