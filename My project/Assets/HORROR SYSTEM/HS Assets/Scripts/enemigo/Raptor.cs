@@ -7,114 +7,150 @@ public class Raptor : MonoBehaviour
 {
     public NavMeshAgent agent;
     public GameObject Player;
-    public GameObject GOCanvas;
 
     public float RadioDeteccion;
     public float AnguloFOV;
     public float VisionPerdida;
     public float moveRadious;
-    bool SiguiendoJugador;
-    public float rotationSpeed = 5f; // para la rotación por que no quiere rotar
-
+    public float rotationSpeed = 5f;
 
     public LayerMask playerLayer;
     public LayerMask ObscructionLayer;
 
+    private bool SiguiendoJugador = false;
+    private Animator animator;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        agent.updateRotation = false;  // desactivar rotación automatica
-        Patrullaje();
+        animator = GetComponent<Animator>();
+
+        agent.updateRotation = false;  // Manual rotation
+
+        Patrol();  // Start patrolling
     }
 
     void Update()
     {
         if (Player)
         {
-
             DetectarJugador();
         }
-
 
         if (SiguiendoJugador)
         {
             agent.destination = Player.transform.position;
-            RotateTowardsPlayer();  // para que rote manualmente
+
+            // Rotate to face the player directly when chasing
+            RotateTowardsPlayer();
+
+            animator.SetBool("Run", true);
+            animator.SetBool("Walk", false);
+        }
+        else
+        {
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            {
+                Patrol();
+            }
+
+            agent.isStopped = false;
+
+            // Rotate towards movement direction while patrolling
+            RotateTowards(agent.velocity.normalized);
+
+            animator.SetBool("Run", false);
+            animator.SetBool("Walk", true);
         }
 
-
-        if (!SiguiendoJugador && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        
+        if (agent.velocity.sqrMagnitude > 0.01f) // if agent is moving
         {
-            Patrullaje();
+            Vector3 moveDirection = agent.velocity.normalized;
+            moveDirection.y = 0f; // keep horizontal rotation only
+
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
     }
 
 
     private void DetectarJugador()
     {
-
         Vector3 directionToPlayer = (Player.transform.position - transform.position).normalized;
         float AngleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
-
-        if (AngleToPlayer <= AnguloFOV)
+        if (AngleToPlayer <= AnguloFOV / 2)  // FOV angle usually halved for proper cone check
         {
-
             float distanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);
-
 
             if (!Physics.Raycast(transform.position, directionToPlayer, distanceToPlayer, ObscructionLayer))
             {
-
                 if (distanceToPlayer <= RadioDeteccion)
                 {
-
-                    Debug.Log("Dino vio a Player");
-
+                    // Player seen
                     SiguiendoJugador = true;
+                    CancelInvoke(nameof(DejarSeguir)); // Cancel losing sight if still called
                 }
-                else
+                else if (SiguiendoJugador)
                 {
-
-                    if (SiguiendoJugador)
-                    {
-
-                        Invoke("DejarSeguir", VisionPerdida);
-                    }
+                    // Lost sight, invoke stop chasing after delay
+                    Invoke(nameof(DejarSeguir), VisionPerdida);
                 }
             }
         }
     }
 
-
-    void Patrullaje()
+    void Patrol()
     {
+        Vector3 randomPoint = Random.insideUnitSphere * moveRadious + transform.position;
 
-        Vector3 randomPoint = Random.insideUnitSphere * moveRadious;
-        randomPoint += transform.position;
-
-        if (UnityEngine.AI.NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, moveRadious, UnityEngine.AI.NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, moveRadious, NavMesh.AllAreas))
         {
             agent.SetDestination(hit.position);
         }
     }
-
 
     void DejarSeguir()
     {
         SiguiendoJugador = false;
     }
 
-    private void RotateTowardsPlayer()
+    void RotateTowardsPlayer()
     {
         Vector3 direction = (Player.transform.position - transform.position).normalized;
-        direction.y = 0f; // solo rotacion horizontal, nada de vertical
+        direction.y = 0f;
 
         if (direction.magnitude > 0)
         {
             Quaternion lookRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
         }
+    }
+
+
+    private void RotateTowards(Vector3 direction)
+    {
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            direction.y = 0f;
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+        }
+    }
+
+    public void Stun(float duration)
+    {
+        // You probably want to stop NavMeshAgent movement and play stun animation here
+        agent.isStopped = true;
+        animator.SetTrigger("Stun"); // assuming you have a stun animation trigger
+        Invoke(nameof(Unstun), duration);
+    }
+
+    void Unstun()
+    {
+        agent.isStopped = false;
+        animator.ResetTrigger("Stun");
     }
 
     private void OnDrawGizmos()
@@ -126,25 +162,10 @@ public class Raptor : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, moveRadious);
 
         Gizmos.color = Color.red;
-        Vector3 leftBoundary = Quaternion.Euler(0, -AnguloFOV, 0) * Vector3.forward;
-        Vector3 rigtBoundary = Quaternion.Euler(0, AnguloFOV, 0) * Vector3.forward;
+        Vector3 leftBoundary = Quaternion.Euler(0, -AnguloFOV / 2, 0) * transform.forward;
+        Vector3 rightBoundary = Quaternion.Euler(0, AnguloFOV / 2, 0) * transform.forward;
 
         Gizmos.DrawRay(transform.position, leftBoundary * RadioDeteccion);
-        Gizmos.DrawRay(transform.position, rigtBoundary * RadioDeteccion);
-    }
-
-
-    private void OnCollisionEnter(Collision collision)
-    {
-
-        if (collision.gameObject.CompareTag("Player"))
-        {
-
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-            GOCanvas.SetActive(true);
-
-            Destroy(collision.gameObject);
-        }
+        Gizmos.DrawRay(transform.position, rightBoundary * RadioDeteccion);
     }
 }

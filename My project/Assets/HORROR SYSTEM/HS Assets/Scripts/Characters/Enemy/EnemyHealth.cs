@@ -21,35 +21,13 @@ public class EnemyHealth : MonoBehaviour
 
         health -= damageAmount;
 
-        if (health <= 0)
-        {
-            Die();
-        }
-        else
-        {
-            ReactToDamage();
-        }
-    }
-
-    private void Die()
-    {
-        isEnemyDead = true;
-        enemyAnimations.Die();
-        enemyController.StopEnemy();
-        enemyController.DisableEnemySound();
-
-        CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
-        if (capsuleCollider != null)
-        {
-            capsuleCollider.enabled = false;
-        }
-
-        Destroy(gameObject, 15f);
+        ReactToDamage();
+        
     }
 
     private void ReactToDamage()
     {
-        enemyAnimations.ReactToDamage();
+        enemyAnimations.ReactToLight();
     }
 
     public bool IsEnemyDead()

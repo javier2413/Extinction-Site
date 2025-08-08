@@ -30,6 +30,13 @@ public class ControlMenuLogicHandler : MonoBehaviour
         for (int i = 0; i < rebindButtons.Length; i++)
         {
             int index = i;
+
+            if (rebindButtons[i] == null)
+            {
+                Debug.LogWarning($"Rebind button at index {i} is null and will be skipped.");
+                continue;
+            }
+
             UpdateButtonText(index);
             rebindButtons[i].onClick.AddListener(() => StartRebinding(index));
         }
@@ -49,7 +56,17 @@ public class ControlMenuLogicHandler : MonoBehaviour
 
     private void UpdateButtonText(int buttonIndex)
     {
-        if (buttonIndex >= actionsToRebind.Length) return;
+        if (buttonIndex >= actionsToRebind.Length || buttonIndex >= rebindButtons.Length)
+        {
+            Debug.LogWarning($"Invalid index {buttonIndex} in UpdateButtonText.");
+            return;
+        }
+
+        if (rebindButtons[buttonIndex] == null)
+        {
+            Debug.LogWarning($"Rebind button at index {buttonIndex} is null.");
+            return;
+        }
 
         var actionNameWithBinding = actionsToRebind[buttonIndex];
         var actionAndBinding = actionNameWithBinding.Split('/');
@@ -74,6 +91,7 @@ public class ControlMenuLogicHandler : MonoBehaviour
         }
     }
 
+
     private int GetBindingIndex(InputAction action, string bindingName)
     {
         for (int i = 0; i < action.bindings.Count; i++)
@@ -90,6 +108,18 @@ public class ControlMenuLogicHandler : MonoBehaviour
 
     public void StartRebinding(int actionIndex)
     {
+        if (actionIndex >= actionsToRebind.Length || actionIndex >= rebindButtons.Length)
+        {
+            Debug.LogWarning($"Invalid index {actionIndex} in StartRebinding.");
+            return;
+        }
+
+        if (rebindButtons[actionIndex] == null)
+        {
+            Debug.LogWarning($"Rebind button at index {actionIndex} is null.");
+            return;
+        }
+
         var actionNameWithBinding = actionsToRebind[actionIndex];
         var actionAndBinding = actionNameWithBinding.Split('/');
         var actionName = actionAndBinding[0];
@@ -123,6 +153,7 @@ public class ControlMenuLogicHandler : MonoBehaviour
             })
             .Start();
     }
+
 
     private void InitializeMouseSensitivitySliderLogic()
     {

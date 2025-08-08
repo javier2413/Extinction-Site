@@ -18,8 +18,9 @@ public class EnemyController : MonoBehaviour
     private Transform player;
     private NavMeshAgent navAgent;
     private EnemyAnimations enemyAnimations;
-    private EnemyHealth enemyHealth;
     private bool isAttacking = false;
+    private bool isStun = false;
+    private bool isRoaring = false;
 
     private void Start()
     {
@@ -28,7 +29,7 @@ public class EnemyController : MonoBehaviour
 
     private void Update()
     {
-        if (enemyHealth.IsEnemyDead()) return;
+        if (isStun) return;
 
         HandleTargeting();
         HandleMovement();
@@ -38,7 +39,6 @@ public class EnemyController : MonoBehaviour
     {
         navAgent = GetComponent<NavMeshAgent>();
         enemyAnimations = GetComponent<EnemyAnimations>();
-        enemyHealth = GetComponent<EnemyHealth>();
 
         player = GameObject.FindGameObjectWithTag("Player").transform;
         handDamage.GetComponent<Collider>().enabled = false;
@@ -54,10 +54,10 @@ public class EnemyController : MonoBehaviour
             return;
         }
 
-
         if (target != null)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, target.position);
+            Debug.Log("Distance to player:" + distanceToPlayer);
 
             if (isAttacking)
             {
@@ -67,22 +67,30 @@ public class EnemyController : MonoBehaviour
 
             if (distanceToPlayer > chaseDistance)
             {
-                enemyAnimations.StopAttacking();
-                enemyAnimations.Walk();
-                navAgent.isStopped = false;
-                navAgent.SetDestination(target.position);
+                if (!isRoaring)
+                {
+                    isRoaring = true;
+                    enemyAnimations.Roar();
+
+                    // Stop movement during roar
+                    navAgent.isStopped = true;
+
+                    // Start chasing after delay
+                    Invoke(nameof(StartChasing), 1.5f);
+                }
+               
             }
             else if (distanceToPlayer <= attackDistance)
             {
                 navAgent.isStopped = true;
                 enemyAnimations.StopWalking();
-                enemyAnimations.Attack();
+                enemyAnimations.Roar();
                 isAttacking = true;
                 Invoke("FinishAttack", 2.2f);
             }
             else
             {
-                enemyAnimations.StopAttacking();
+           
                 enemyAnimations.Walk();
                 navAgent.isStopped = false;
                 navAgent.SetDestination(target.position);
@@ -92,6 +100,15 @@ public class EnemyController : MonoBehaviour
         {
             StopEnemy();
         }
+    }
+
+    private void StartChasing()
+    {
+        isRoaring = false;
+
+        enemyAnimations.Walk();
+        navAgent.isStopped = false;
+        navAgent.SetDestination(target.position);
     }
 
     private void RotateTowardsPlayer()
@@ -126,7 +143,7 @@ public class EnemyController : MonoBehaviour
     private void FinishAttack()
     {
         isAttacking = false;
-        enemyAnimations.StopAttacking();
+
     }
 
     public void EnableAttackCollider()
@@ -138,7 +155,21 @@ public class EnemyController : MonoBehaviour
     {
         handDamage.GetComponent<Collider>().enabled = false;
     }
+    public void StunEnemy(float duration)
+    {
+        if (isStun) return; // stunned
 
+        isStun = true;
+        StopEnemy(); // stop movement
+        enemyAnimations.ReactToLight(); // play stun animation
+
+        Invoke(nameof(RecoverFromStun), duration);
+    }
+
+    private void RecoverFromStun()
+    {
+        isStun = false;
+    }
     public void DisableEnemySound()
     {
         enemySound.Stop();

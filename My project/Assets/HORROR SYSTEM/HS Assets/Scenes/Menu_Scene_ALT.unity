@@ -2955,6 +2955,22 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8481785325167644457, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
+      propertyPath: actionsToRebind.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8481785325167644457, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
+      propertyPath: rebindButtons.Array.data[9]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8481785325167644457, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
+      propertyPath: rebindButtons.Array.data[10]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8481785325167644457, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
+      propertyPath: rebindButtons.Array.data[11]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8493526026353911979, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
       propertyPath: m_Color.a
       value: 0.78431374
@@ -3006,6 +3022,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 1139221718590736013, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
+    - {fileID: 2959462575443991466, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
+    - {fileID: 873818507308532522, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
+    - {fileID: 6473640963215649731, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 8304221024545129825, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
       insertIndex: 0

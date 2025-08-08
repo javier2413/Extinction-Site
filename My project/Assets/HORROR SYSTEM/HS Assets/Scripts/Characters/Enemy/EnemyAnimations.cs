@@ -1,15 +1,17 @@
 using UnityEngine;
+using System.Collections;
+using Unity.VisualScripting;
 
 public class EnemyAnimations : MonoBehaviour
 {
-    [Header("Enemy Animator")]
-    public Animator enemyAnimator;
+    private Animator enemyAnimator;
 
     private void Start()
     {
         enemyAnimator = GetComponent<Animator>();
     }
 
+    // Animations
     public void Walk()
     {
         enemyAnimator.SetBool("Walk", true);
@@ -20,23 +22,35 @@ public class EnemyAnimations : MonoBehaviour
         enemyAnimator.SetBool("Walk", false);
     }
 
-    public void Attack()
+    public void Run()
     {
-        enemyAnimator.SetBool("Attack", true);
+        enemyAnimator.SetBool("Run", true);
     }
 
-    public void StopAttacking()
+    public void StopRunning()
     {
-        enemyAnimator.SetBool("Attack", false);
+        enemyAnimator.SetBool("Run", false);
     }
 
-    public void Die()
+    public void Leap()
     {
-        enemyAnimator.SetTrigger("Die");
+        enemyAnimator.SetTrigger("Leap"); //basically so that it only activates once and then doesnt need to loop
     }
 
-    public void ReactToDamage()
+    public void Roar()
     {
-        enemyAnimator.SetTrigger("Damage");
+        enemyAnimator.SetTrigger("Roar"); //same case
+    }
+
+    public void ReactToLight()
+    {
+        enemyAnimator.SetBool("IsStunned", true);
+        StartCoroutine(ResetStun());
+    }
+
+    private IEnumerator ResetStun()
+    {
+        yield return new WaitForSeconds(1.5f);
+        enemyAnimator.SetBool("IsStunned", false);
     }
 }

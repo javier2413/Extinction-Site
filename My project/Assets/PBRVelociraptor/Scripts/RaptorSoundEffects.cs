@@ -17,13 +17,9 @@ public class RaptorSoundEffects : MonoBehaviour
 
     public AudioClip[] yelpClips;
 
-    public AudioClip[] barkClips;
-
     public AudioClip[] roarClips;
 
     public AudioClip[] screechClips;
-
-    public AudioClip[] callClips;
 
     public AudioClip[] deathClips;
 
@@ -65,16 +61,6 @@ public class RaptorSoundEffects : MonoBehaviour
         audioSource.PlayOneShot(clip);
     }
 
-    //Bark Sounds (Random)
-
-    public void Bark()
-    {
-        int Index = Random.Range(0, barkClips.Length);
-
-        AudioClip clip = barkClips[Index];
-        audioSource.PlayOneShot(clip);
-    }
-
     //Roar Sounds (Random)
 
     public void Roar()
@@ -92,34 +78,6 @@ public class RaptorSoundEffects : MonoBehaviour
         int Index = Random.Range(0, screechClips.Length);
 
         AudioClip clip = screechClips[Index];
-        audioSource.PlayOneShot(clip);
-    }
-
-    //Call Sounds (Random)
-
-    public void Call()
-    {
-        int Index = Random.Range(0, callClips.Length);
-
-        AudioClip clip = callClips[Index];
-        audioSource.PlayOneShot(clip);
-    }
-
-    //Call Sounds (Ordered)
-
-    public void Call1()
-    {
-        AudioClip clip = callClips[0];
-        audioSource.PlayOneShot(clip);
-    }
-    public void Call2()
-    {
-        AudioClip clip = callClips[1];
-        audioSource.PlayOneShot(clip);
-    }
-    public void Call3()
-    {
-        AudioClip clip = callClips[2];
         audioSource.PlayOneShot(clip);
     }
 

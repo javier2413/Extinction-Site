@@ -21,10 +21,10 @@ MonoBehaviour:
     value: 0
   intensity:
     overrideState: 1
-    value: 0.25
+    value: 2.52
   color:
-    overrideState: 0
-    value: {r: 0, g: 0, b: 0, a: 1}
+    overrideState: 1
+    value: {r: 0.112972535, g: 0.4867924, b: 0.21102343, a: 1}
   ambientOnly:
     overrideState: 0
     value: 1
@@ -177,7 +177,7 @@ MonoBehaviour:
     value: {x: 67.78518, y: 90.28143}
   minLuminance:
     overrideState: 1
-    value: 1.85
+    value: 2.3
   maxLuminance:
     overrideState: 1
     value: 9
@@ -214,10 +214,10 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 0.25
+    value: 0.51
   size:
     overrideState: 1
-    value: 0.8
+    value: 1.63
   lumContrib:
     overrideState: 1
     value: 0.8
