@@ -3,9 +3,13 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
+
+    public string Nivel;
+
     [Header("Health Settings")]
     public int maxHealth = 100;
     public int currentHealth;
@@ -74,7 +78,8 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            Die();
+            //Die();
+            SceneManager.LoadScene(Nivel);
         }
 
         UpdateHealthUI(currentHealth, maxHealth);

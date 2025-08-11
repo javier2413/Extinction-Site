@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/HORROR SYSTEM/HS Assets/Scenes/Menu_Scene_Pack.unity
     guid: 52a9f99cc7778a54aab9b4a71039dfbf
   - enabled: 1
-    path: Assets/HORROR SYSTEM/HS Assets/Scenes/Proximamente.unity
+    path: Assets/HORROR SYSTEM/HS Assets/Scenes/GameOver.unity
     guid: 2713b5c8488321d44b991ba8cf131134
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 5394f581e496a94499b3f83cf9972e3b, type: 3}
