@@ -4,22 +4,27 @@ using UnityEngine;
 using UnityEngine.AI;
 public class EnemyWeeping : MonoBehaviour
 {
-   
-    
-        [Header("Referencias")]
-        public Transform player;
 
-        [Header("Configuración")]
-        public float fieldOfView = 60f;
-        public float detectionRadius = 10f;
+    //public NavMeshAgent Trex;
+    //public float velocidad;
+    //public bool Persiguiendo;
+    //public float Rango;
+    //float Distacia;
 
-        private NavMeshAgent agent;
-        private bool hasDetectedPlayer = false;
+    [Header("Referencias")]
+    public Transform player;
 
-        void Start()
-        {
-            agent = GetComponent<NavMeshAgent>();
-        }
+    [Header("Configuración")]
+    public float fieldOfView = 60f;
+    public float detectionRadius = 10f;
+
+    private NavMeshAgent agent;
+    private bool hasDetectedPlayer = false;
+
+    void Start()
+    {
+        agent = GetComponent<NavMeshAgent>();
+    }
 
         void Update()
         {
