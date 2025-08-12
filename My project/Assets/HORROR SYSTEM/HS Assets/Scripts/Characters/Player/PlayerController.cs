@@ -37,8 +37,9 @@ public class PlayerController : MonoBehaviour
     private bool isFlashlight = false;
 
     private bool isKnife = false;
+    private bool isKnifeAttack = false;
     private bool isKnifeAiming = false;
-    
+
     private bool isPistol = false;
     private bool isPistolAiming = false;
     private bool isPistolShoot = false;
@@ -50,27 +51,17 @@ public class PlayerController : MonoBehaviour
     private PlayerAnimations playerAnimations;
     private PlayerHealth playerHealth;
 
+    private StaminaSystem staminaSystem;
+
+
+
     private void Start()
     {
         playerAnimations = GetComponent<PlayerAnimations>();
         playerAnimations.ResetRigWeights();
         playerHealth = GetComponent<PlayerHealth>();
-
-        if (cameraController == null)
-        {
-            cameraController = FindObjectOfType<PlayerCamera>();
-            if (cameraController == null)
-                Debug.LogError("PlayerCamera component not found in scene!");
-        }
-
-        if (flashlightSystem == null)
-        {
-            flashlightSystem = GetComponentInChildren<FlashlightSystem>();
-            if (flashlightSystem == null)
-                Debug.LogError("FlashlightSystem component not found in children!");
-        }
+        staminaSystem = GetComponent<StaminaSystem>();
     }
-
 
     private void Update()
     {
@@ -112,10 +103,14 @@ public class PlayerController : MonoBehaviour
         if (isKnifeAiming || isPistolAiming)
         {
             isRunning = false;
+            staminaSystem.SetDraining(false);
         }
         else
         {
-            isRunning = (InputManager.instance.RunningValue > 0) && (Mathf.Abs(moveZ) > 0f || Mathf.Abs(moveX) > 0f);
+            bool wantsToRun = (InputManager.instance.RunningValue > 0) && (Mathf.Abs(moveZ) > 0f || Mathf.Abs(moveX) > 0f);
+            isRunning = wantsToRun && staminaSystem.HasStamina();
+
+            staminaSystem.SetDraining(isRunning);
         }
 
         playerAnimations.SetMovementParameters(moveX, moveZ);
@@ -142,6 +137,8 @@ public class PlayerController : MonoBehaviour
     private void HandleInput()
     {
         InputFlashlight();
+        //InputKnife();
+        //InputPistol();
         CheckInventoryInput();
     }
 
@@ -241,7 +238,20 @@ public class PlayerController : MonoBehaviour
     // KNIFE
     // ------------------------------------------------------------------------------------
 
-    
+    //private void InputKnife()
+    //{
+    //    if (!isPistolAiming && !isKnifeAiming && !isKnifeAttack && !isShoot)
+    //    {
+    //        if (InputManager.instance.Weapon1Triggered)
+    //        {
+    //            if (InventoryManager.instance.hasKnife)
+    //            {
+    //                KnifeSwitch();
+    //            }
+    //            InputManager.instance.SetWeapon1Triggered(false);
+    //        }
+    //    }
+    //}
 
     public void KnifeSwitch()
     {
@@ -287,7 +297,7 @@ public class PlayerController : MonoBehaviour
 
     public void KnifeSwitchAniamtionEvent()
     {
-        InventoryManager.instance.SetKnifeActive(isKnife); 
+        InventoryManager.instance.SetKnifeActive(isKnife);
         AudioManager.instance.Play(getKnifeSound);
     }
 
@@ -349,6 +359,20 @@ public class PlayerController : MonoBehaviour
     // PISTOL
     // ------------------------------------------------------------------------------------
 
+    //private void InputPistol()
+    //{
+    //    if (!isPistolAiming && !isKnifeAiming && !isKnifeAttack && !isShoot)
+    //    {
+    //        if (InputManager.instance.Weapon2Triggered)
+    //        {
+    //            if (InventoryManager.instance.hasPistol)
+    //            {
+    //                PistolSwitch();
+    //            }
+    //            InputManager.instance.SetWeapon2Triggered(false);
+    //        }
+    //    }
+    //}
 
     public void PistolSwitch()
     {
@@ -445,7 +469,11 @@ public class PlayerController : MonoBehaviour
 
         playerAnimations.SetPistolAttack(isPistolAiming, isShoot && pistolSystem.GetCurrentAmmo() > 0, false);
 
-       
+        //if (InputManager.instance.ReloadTriggered && pistolSystem.CanReload())
+        //{
+        //    StartCoroutine(ReloadAfterAnimation());
+        //    InputManager.instance.SetReloadTriggered(false);
+        //}
     }
 
     private IEnumerator ReloadAfterAnimation()
