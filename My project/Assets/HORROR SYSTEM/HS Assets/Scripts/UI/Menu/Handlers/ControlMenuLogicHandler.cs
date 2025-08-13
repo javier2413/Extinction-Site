@@ -16,17 +16,22 @@ using System.Linq;
         [Header("Rebinding Settings")]
         public Button[] rebindButtons;
 
-        // need to set the keys right and im fainting send help
-        public string[] actionsToRebind = {
+    public string[] actionsToRebind = {
         "Pause/<Keyboard>/escape",
         "Running/<Keyboard>/rightShift",
         "Move/up/<Keyboard>/W",
-        "Move/down<Keyboard>/S",
-        "Move/left<Keyboard>/A",
-        "Move/right<Keyboard>/D"
+        "Move/down/<Keyboard>/S",
+        "Move/left/<Keyboard>/A",
+        "Move/right/<Keyboard>/D",
+        "Inventory/<Keyboard>/I",
+        "Interact/<Keyboard>/E",
+        "Flashlight/<Keyboard>/F",
+        "Flash/<Keyboard>/space",
+        "Recharge/<Keyboard>/R",
+        "RockThrown/<Keyboard>/H"
     };
 
-        [Header("Mouse Sensitivity Settings")]
+    [Header("Mouse Sensitivity Settings")]
         public Slider sensitivitySlider;
         public TMP_Text sensitivityValueText;
 
