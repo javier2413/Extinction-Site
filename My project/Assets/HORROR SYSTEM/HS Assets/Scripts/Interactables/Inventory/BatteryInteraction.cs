@@ -3,20 +3,29 @@ using UnityEngine;
 public class BatteryInteraction : InteractiveItem
 {
     private InventorySystem playerInventory;
-    private FlashlightSystem playerFlaslight;
+    private FlashlightSystem playerFlashlight;
+
+    // Amount of battery restored per battery item use (set this in Inspector or constructor)
+    public float rechargeAmount = 5f;
 
     public override void Interact(GameObject player = null)
     {
         base.Interact(player);
 
+        if (player == null)
+        {
+            Debug.LogWarning("BatteryInteraction.Interact called with null player");
+            return;
+        }
+
         this.playerInventory = player.GetComponent<InventorySystem>();
-        this.playerFlaslight = InventoryManager.instance.flashlightInHand.GetComponent<FlashlightSystem>();
+        this.playerFlashlight = player.GetComponentInChildren<FlashlightSystem>();
 
         var itemHasBeenAdded = playerInventory.AddItem(itemId, count, this);
         if (itemHasBeenAdded)
         {
             AudioManager.instance.Play(pickUpSound);
-            Destroy(0);
+            Destroy(gameObject);
         }
         else
         {
@@ -24,31 +33,42 @@ public class BatteryInteraction : InteractiveItem
         }
     }
 
+
     public override void UseInInventory()
     {
-        var flashlight = playerInventory.FindItemByType(ItemDatabase.Type.FLASHLIGHT).Find(item => true);
-        if (flashlight != null)
+        if (playerInventory == null)
         {
-            if (playerFlaslight.currentIntensity < playerFlaslight.maxIntensity)
+            Debug.LogWarning("Player inventory is null in UseInInventory");
+            return;
+        }
+
+        var flashlightItems = playerInventory.FindItemByType(ItemDatabase.Type.FLASHLIGHT);
+        if (flashlightItems != null && flashlightItems.Count > 0 && playerFlashlight != null)
+        {
+            // Check battery level before recharging
+            if (playerFlashlight.currentBattery < playerFlashlight.maxBattery)
             {
-                playerFlaslight.SetMaxIntensity();
+                playerFlashlight.RechargeIntensity(rechargeAmount);
                 playerInventory.SpendSingleItem(itemId);
-                flashlight.UpdateAmountText();
+                flashlightItems[0].UpdateAmountText();
             }
             else
             {
-                Debug.Log("Maximum intensity");
+                Debug.Log("Flashlight battery already full");
             }
         }
         else
         {
-            Debug.Log("The flashlight is missing from the inventory");
+            Debug.Log("Flashlight is missing from inventory or playerFlashlight reference is null");
         }
     }
 
     public override void DropFromInventory()
     {
-        playerInventory.DropItems(itemId, 1);
+        if (playerInventory != null)
+        {
+            playerInventory.DropItems(itemId, 1);
+        }
     }
 
     public override string GetStringCount()
@@ -56,3 +76,4 @@ public class BatteryInteraction : InteractiveItem
         return count.ToString();
     }
 }
+

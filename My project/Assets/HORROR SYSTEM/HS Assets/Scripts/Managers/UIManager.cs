@@ -122,7 +122,7 @@ public class UIManager : MonoBehaviour
         if (!setInventoryPanel)
         {
             ContextMenu.HideContextMenu();
-            InventoryEquipmentState.ExecuteActions();
+            //InventoryEquipmentState.ExecuteActions();
         }
     }
 
@@ -149,7 +149,7 @@ public class UIManager : MonoBehaviour
                 isInventoryPanelActive = false;
                 inventoryPanel.SetActive(false);
                 ContextMenu.HideContextMenu();
-                InventoryEquipmentState.ExecuteActions();
+                //InventoryEquipmentState.ExecuteActions();
             }
 
             DisableOtherPanels();

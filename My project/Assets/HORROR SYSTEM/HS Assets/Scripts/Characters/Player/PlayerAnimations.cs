@@ -44,52 +44,52 @@ public class PlayerAnimations : MonoBehaviour
         playerAnimator.SetBool("IdleFlashlight", isFlashlight);
     }
 
-    public void SetPistolIdle(bool isIdle)
-    {
-        playerAnimator.SetBool("IdlePistol", isIdle);
-    }
+    //public void SetPistolIdle(bool isIdle)
+    //{
+    //    playerAnimator.SetBool("IdlePistol", isIdle);
+    //}
 
-    public void SetPistolAttack(bool isAiming, bool isShoot, bool isReloading)
-    {
-        playerAnimator.SetBool("PistolAiming", isAiming);
-        playerAnimator.SetBool("PistolShoot", isShoot);
-        playerAnimator.SetBool("PistolReload", isReloading);
-    }
+    //public void SetPistolAttack(bool isAiming, bool isShoot, bool isReloading)
+    //{
+    //    playerAnimator.SetBool("PistolAiming", isAiming);
+    //    playerAnimator.SetBool("PistolShoot", isShoot);
+    //    playerAnimator.SetBool("PistolReload", isReloading);
+    //}
 
-    public void CancelPistolAnimation()
-    {
-        playerAnimator.SetBool("PistolAiming", false);
-        playerAnimator.SetBool("PistolShoot", false);
-        playerAnimator.SetBool("PistolReload", false);
-    }
+    //public void CancelPistolAnimation()
+    //{
+    //    playerAnimator.SetBool("PistolAiming", false);
+    //    playerAnimator.SetBool("PistolShoot", false);
+    //    playerAnimator.SetBool("PistolReload", false);
+    //}
 
-    public float GetReloadAnimationDuration()
-    {
-        AnimationClip[] clips = playerAnimator.runtimeAnimatorController.animationClips;
-        foreach (AnimationClip clip in clips)
-        {
-            if (clip.name == "Pistol_Reload")
-            {
-                return clip.length;
-            }
-        }
-        return 0f;
-    }
+    //public float GetReloadAnimationDuration()
+    //{
+    //    AnimationClip[] clips = playerAnimator.runtimeAnimatorController.animationClips;
+    //    foreach (AnimationClip clip in clips)
+    //    {
+    //        if (clip.name == "Pistol_Reload")
+    //        {
+    //            return clip.length;
+    //        }
+    //    }
+    //    return 0f;
+    //}
 
-    public void SetKnifeIdle(bool isIdle)
-    {
-        playerAnimator.SetBool("IdleKnife", isIdle);
-    }
+    //public void SetKnifeIdle(bool isIdle)
+    //{
+    //    playerAnimator.SetBool("IdleKnife", isIdle);
+    //}
 
-    public void SetKnifeAiming(bool isAimingKnife)
-    {
-        playerAnimator.SetBool("KnifeAiming", isAimingKnife);
-    }
+    //public void SetKnifeAiming(bool isAimingKnife)
+    //{
+    //    playerAnimator.SetBool("KnifeAiming", isAimingKnife);
+    //}
 
-    public void SetKnifeAttack()
-    {
-        playerAnimator.SetTrigger("KnifeAttack");
-    }
+    //public void SetKnifeAttack()
+    //{
+    //    playerAnimator.SetTrigger("KnifeAttack");
+    //}
 
     public void SetDeath()
     {

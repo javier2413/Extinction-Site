@@ -3,183 +3,183 @@ using System.Collections.Generic;
 
 public class InventoryEquipmentState
 {
-    private static EquipmentActionState equipmentActions = new()
-    {
-        flashlightAction = null,
-        equipmentToTake = null,
-        equipmentsToRemove = new()
-    };
+    //private static EquipmentActionState equipmentActions = new()
+    //{
+    //    flashlightAction = null,
+    //    equipmentToTake = null,
+    //    equipmentsToRemove = new()
+    //};
 
-    private class EquipmentActionState
-    {
-        public EquipmentAction flashlightAction;
-        public EquipmentAction equipmentToTake;
-        public List<EquipmentAction> equipmentsToRemove;
-    }
+    //private class EquipmentActionState
+    //{
+    //    public EquipmentAction flashlightAction;
+    //    public EquipmentAction equipmentToTake;
+    //    public List<EquipmentAction> equipmentsToRemove;
+    //}
 
-    private class EquipmentAction
-    {
-        public Action action;
-        public ItemDatabase.Type itemType;
-    }
+    //private class EquipmentAction
+    //{
+    //    public Action action;
+    //    public ItemDatabase.Type itemType;
+    //}
 
-    public static void TakeEquipment(InteractiveItem item)
-    {
-        var playerController = item.GetPlayer().GetComponent<PlayerController>();
-        var itemType = item.GetDatabaseItem().type;
+    //public static void TakeEquipment(InteractiveItem item)
+    //{
+    //    var playerController = item.GetPlayer().GetComponent<PlayerController>();
+    //    var itemType = item.GetDatabaseItem().type;
 
-        switch (itemType)
-        {
-            case ItemDatabase.Type.FLASHLIGHT:
-                Action flashlightAction = () =>
-                {
-                    playerController.SetFlashlighState(true);
-                };
+    //    switch (itemType)
+    //    {
+    //        case ItemDatabase.Type.FLASHLIGHT:
+    //            Action flashlightAction = () =>
+    //            {
+    //                playerController.SetFlashlighState(true);
+    //            };
 
-                equipmentActions.flashlightAction = new EquipmentAction()
-                {
-                    itemType = itemType,
-                    action = flashlightAction
-                };
+    //            equipmentActions.flashlightAction = new EquipmentAction()
+    //            {
+    //                itemType = itemType,
+    //                action = flashlightAction
+    //            };
 
-                break;
+    //            break;
 
-            case ItemDatabase.Type.PISTOL:
-                Action pistolAction = () =>
-                {
-                    playerController.SetPistolState(true);
-                };
+    //        case ItemDatabase.Type.PISTOL:
+    //            Action pistolAction = () =>
+    //            {
+    //                playerController.SetPistolState(true);
+    //            };
 
-                equipmentActions.equipmentToTake = new EquipmentAction()
-                {
-                    itemType = itemType,
-                    action = pistolAction
-                };
+    //            equipmentActions.equipmentToTake = new EquipmentAction()
+    //            {
+    //                itemType = itemType,
+    //                action = pistolAction
+    //            };
 
-                break;
+    //            break;
 
-            case ItemDatabase.Type.KNIFE:
-                Action knifeAction = () =>
-                {
-                    playerController.SetKnifeState(true);
-                };
+    //        case ItemDatabase.Type.KNIFE:
+    //            Action knifeAction = () =>
+    //            {
+    //                playerController.SetKnifeState(true);
+    //            };
 
-                equipmentActions.equipmentToTake = new EquipmentAction()
-                {
-                    itemType = itemType,
-                    action = knifeAction
-                };
+    //            equipmentActions.equipmentToTake = new EquipmentAction()
+    //            {
+    //                itemType = itemType,
+    //                action = knifeAction
+    //            };
 
-                break;
-        }
-    }
+    //            break;
+    //    }
+    //}
 
-    public static void RemoveEquipment(InteractiveItem item)
-    {
-        var playerController = item.GetPlayer().GetComponent<PlayerController>();
-        var itemType = item.GetDatabaseItem().type;
+    //public static void RemoveEquipment(InteractiveItem item)
+    //{
+    //    var playerController = item.GetPlayer().GetComponent<PlayerController>();
+    //    var itemType = item.GetDatabaseItem().type;
 
-        switch (itemType)
-        {
-            case ItemDatabase.Type.FLASHLIGHT:
-                Action flashlightAction = () =>
-                {
-                    playerController.SetFlashlighState(false);
-                };
+    //    switch (itemType)
+    //    {
+    //        case ItemDatabase.Type.FLASHLIGHT:
+    //            Action flashlightAction = () =>
+    //            {
+    //                playerController.SetFlashlighState(false);
+    //            };
 
-                equipmentActions.flashlightAction = new EquipmentAction()
-                {
-                    itemType = itemType,
-                    action = flashlightAction
-                };
+    //            equipmentActions.flashlightAction = new EquipmentAction()
+    //            {
+    //                itemType = itemType,
+    //                action = flashlightAction
+    //            };
 
-                break;
+    //            break;
 
-            case ItemDatabase.Type.PISTOL:
-                Action pistolAction = () =>
-                {
-                    playerController.SetPistolState(false);
-                };
+    //        case ItemDatabase.Type.PISTOL:
+    //            Action pistolAction = () =>
+    //            {
+    //                playerController.SetPistolState(false);
+    //            };
 
-                equipmentActions.equipmentsToRemove.Add(
-                    new EquipmentAction()
-                    {
-                        itemType = itemType,
-                        action = pistolAction
-                    }
-                );
+    //            equipmentActions.equipmentsToRemove.Add(
+    //                new EquipmentAction()
+    //                {
+    //                    itemType = itemType,
+    //                    action = pistolAction
+    //                }
+    //            );
 
-                break;
+    //            break;
 
-            case ItemDatabase.Type.KNIFE:
-                Action knifeAction = () =>
-                {
-                    playerController.SetKnifeState(false);
-                };
+    //        case ItemDatabase.Type.KNIFE:
+    //            Action knifeAction = () =>
+    //            {
+    //                playerController.SetKnifeState(false);
+    //            };
 
-                equipmentActions.equipmentsToRemove.Add(
-                    new EquipmentAction()
-                    {
-                        itemType = itemType,
-                        action = knifeAction
-                    }
-                );
+    //            equipmentActions.equipmentsToRemove.Add(
+    //                new EquipmentAction()
+    //                {
+    //                    itemType = itemType,
+    //                    action = knifeAction
+    //                }
+    //            );
 
-                break;
-        }
-    }
+    //            break;
+    //    }
+    //}
 
-    public static void ExecuteActions()
-    {
-        DeleteEquipmentToTakeIfAlreadyRemoved();
+    //public static void ExecuteActions()
+    //{
+    //    DeleteEquipmentToTakeIfAlreadyRemoved();
 
-        equipmentActions.equipmentsToRemove.ForEach(action => Execute(action));
-        Execute(equipmentActions.equipmentToTake);
-        Execute(equipmentActions.flashlightAction);
+    //    equipmentActions.equipmentsToRemove.ForEach(action => Execute(action));
+    //    Execute(equipmentActions.equipmentToTake);
+    //    Execute(equipmentActions.flashlightAction);
 
-        ClearActions();
-    }
+    //    ClearActions();
+    //}
 
-    private static void DeleteEquipmentToTakeIfAlreadyRemoved()
-    {
-        if (equipmentActions.equipmentToTake == null)
-        {
-            return;
-        }
+    //private static void DeleteEquipmentToTakeIfAlreadyRemoved()
+    //{
+    //    if (equipmentActions.equipmentToTake == null)
+    //    {
+    //        return;
+    //    }
 
-        var equipmentToTake = equipmentActions.equipmentToTake;
-        var deleteEquipmentToTake = equipmentActions.equipmentsToRemove.Exists(action =>
-        {
-            var itemType = action.itemType;
-            if (equipmentToTake.itemType.Equals(itemType))
-            {
-                return true;
-            }
-            return false;
-        });
+    //    var equipmentToTake = equipmentActions.equipmentToTake;
+    //    var deleteEquipmentToTake = equipmentActions.equipmentsToRemove.Exists(action =>
+    //    {
+    //        var itemType = action.itemType;
+    //        if (equipmentToTake.itemType.Equals(itemType))
+    //        {
+    //            return true;
+    //        }
+    //        return false;
+    //    });
 
-        if (deleteEquipmentToTake)
-        {
-            equipmentActions.equipmentToTake = null;
-        }
-    }
+    //    if (deleteEquipmentToTake)
+    //    {
+    //        equipmentActions.equipmentToTake = null;
+    //    }
+    //}
 
-    private static void Execute(EquipmentAction equipmentAction)
-    {
-        if (equipmentAction == null)
-        {
-            return;
-        }
-        equipmentAction.action();
-    }
+    //private static void Execute(EquipmentAction equipmentAction)
+    //{
+    //    if (equipmentAction == null)
+    //    {
+    //        return;
+    //    }
+    //    equipmentAction.action();
+    //}
 
-    private static void ClearActions()
-    {
-        equipmentActions = new()
-        {
-            flashlightAction = null,
-            equipmentToTake = null,
-            equipmentsToRemove = new()
-        };
-    }
+    //private static void ClearActions()
+    //{
+    //    equipmentActions = new()
+    //    {
+    //        flashlightAction = null,
+    //        equipmentToTake = null,
+    //        equipmentsToRemove = new()
+    //    };
+    //}
 }

@@ -1,54 +1,167 @@
 using UnityEngine;
+using System.Collections;
 
 public class FlashlightSystem : MonoBehaviour
 {
-    [Header("Light")]
-    public Light spotLight = null;
+    [Header("Light Settings")]
+    public Light spotLight;
+    public KeyCode toggleKey = KeyCode.F;      // Key to toggle flashlight
+    public KeyCode flashKey = KeyCode.Space;       // Key to trigger flash (same as toggle for hold/release)
+    public KeyCode rechargeKey = KeyCode.R;    // Key to manually recharge battery
+    public float maxIntensity = 3f;
+    public float minIntensity = 0.2f;
+    public float flashIntensity = 5f;
+    public float intensityDrainRate = 0.5f;
+    public float rechargeRate = 1f;
+    public float flashDuration = 0.5f;
+    public float flashCooldown = 3f;
 
+    [Header("Animation Settings")]
+    public PlayerAnimations playerAnimations;
 
-    [Header("Intensity Settings")]
-    public int maxIntensity;
-    public float currentIntensity;
-    public float intensityChange;
+    [Header("Battery Settings")]
+    public float currentBattery;
+    public float maxBattery = 10f;
+
+    [Header("Enemy Detection")]
+    public float stunDuration = 5f;
 
     [Header("Audio Settings")]
-    public string reloadFlashlightSound;
+    public string reloadSound;
+
+    private bool isFlashlightOn = false;
+    private bool isFlashing = false;
+    private bool flashOnCooldown = false;
 
     private void Start()
     {
-        currentIntensity = maxIntensity;
-        maxIntensity = 3;
         if (spotLight == null)
         {
-            Debug.LogError("spotLight is NOT assigned in inspector!");
+            Debug.LogError("No Light assigned to flashlight system.");
+            enabled = false;
+            return;
+        }
+
+        if (playerAnimations == null)
+            playerAnimations = GetComponent<PlayerAnimations>();
+
+        currentBattery = maxBattery;
+        spotLight.enabled = false;
+        spotLight.intensity = maxIntensity;
+
+        playerAnimations?.SetFlashlightIdle(false);
+    }
+
+
+    private void Update()
+    {
+
+        // Manual recharge key (optional)
+        if (Input.GetKeyDown(rechargeKey))
+        {
+            RechargeBattery();
+        }
+
+        if (Input.GetKeyUp(flashKey) && !isFlashing && !flashOnCooldown)
+        {
+            StartCoroutine(FlashCoroutine());
+        }
+
+        if (isFlashlightOn)
+        {
+            // Drain battery continuously if not flashing
+            if (!isFlashing)
+            {
+                currentBattery -= intensityDrainRate * Time.deltaTime;
+                currentBattery = Mathf.Clamp(currentBattery, 0f, maxBattery);
+
+                // Update intensity based on battery
+                float batteryRatio = currentBattery / maxBattery;
+                spotLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, batteryRatio);
+
+                // Auto turn off if battery empty
+                if (currentBattery <= 0)
+                {
+                    ToggleFlashlight(false);
+                    return;
+                }
+            }
+
+            CheckForRaptorsInLight();
+
+            // Trigger flash on key release if possible
+            if (Input.GetKeyUp(flashKey) && !isFlashing && !flashOnCooldown)
+            {
+                StartCoroutine(FlashCoroutine());
+            }
+        }
+    }
+
+    public bool IsOn()
+    {
+        return isFlashlightOn;
+    }
+
+    public void ToggleFlashlight(bool turnOn)
+    {
+        isFlashlightOn = turnOn;
+        spotLight.enabled = turnOn;
+
+        if (turnOn)
+        {
+            float batteryRatio = currentBattery / maxBattery;
+            spotLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, batteryRatio);
         }
         else
         {
-            Debug.Log("spotLight assigned: " + spotLight.name);
-            spotLight.intensity = currentIntensity;
-            spotLight.enabled = false;
+            spotLight.intensity = 0f;
         }
+
+        // Sync animation state
+        playerAnimations?.SetFlashlightIdle(turnOn);
     }
-    private void Update()
+
+
+    public void RechargeIntensity(float amount)
     {
-        //BatteryChange();
+        currentBattery = Mathf.Clamp(currentBattery + amount, 0f, maxBattery);
 
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            ToggleFlashlight(!spotLight.enabled);
-        }
-
-        if (spotLight.enabled)
-        {
-            CheckForRaptorsInLight();
-        }
+        float batteryRatio = currentBattery / maxBattery;
+        spotLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, batteryRatio);
     }
 
+    private IEnumerator FlashCoroutine()
+    {
+        isFlashing = true;
+        flashOnCooldown = true;
 
-    void CheckForRaptorsInLight()
+        spotLight.intensity = flashIntensity;
+
+        yield return new WaitForSeconds(flashDuration);
+
+        float elapsed = 0f;
+        float startIntensity = spotLight.intensity;
+        float targetIntensity = Mathf.Lerp(minIntensity, maxIntensity, currentBattery / maxBattery);
+
+        // Smoothly return to battery intensity
+        while (elapsed < 1f)
+        {
+            elapsed += Time.deltaTime * rechargeRate;
+            spotLight.intensity = Mathf.Lerp(startIntensity, targetIntensity, elapsed);
+            yield return null;
+        }
+
+        isFlashing = false;
+
+        // Flash cooldown to prevent spamming
+        yield return new WaitForSeconds(flashCooldown);
+        flashOnCooldown = false;
+    }
+
+    private void CheckForRaptorsInLight()
     {
         float maxDistance = spotLight.range;
-        float spotAngle = spotLight.spotAngle / 2f; // half angle
+        float halfSpotAngle = spotLight.spotAngle / 2f;
 
         Collider[] hits = Physics.OverlapSphere(spotLight.transform.position, maxDistance);
 
@@ -57,51 +170,24 @@ public class FlashlightSystem : MonoBehaviour
             Raptor raptor = hit.GetComponent<Raptor>();
             if (raptor != null)
             {
-                Vector3 directionToRaptor = (raptor.transform.position - spotLight.transform.position).normalized;
-                float angleToRaptor = Vector3.Angle(spotLight.transform.forward, directionToRaptor);
+                Vector3 dirToRaptor = (raptor.transform.position - spotLight.transform.position).normalized;
+                float angle = Vector3.Angle(spotLight.transform.forward, dirToRaptor);
 
-                if (angleToRaptor <= spotAngle)
+                if (angle <= halfSpotAngle)
                 {
-                    raptor.Stun(5f); // Stun the raptor for 5 seconds
+                    raptor.Stun(stunDuration);
                 }
             }
         }
     }
 
-
-    public void SetMaxIntensity()
+    public void RechargeBattery()
     {
-        currentIntensity = maxIntensity;
-        AudioManager.instance.Play(reloadFlashlightSound);
-    }
+        currentBattery = maxBattery;
 
-    public void ToggleFlashlight(bool isFlashlightOn)
-    {
-        Debug.Log("ToggleFlashlight called. Turning flashlight " + (isFlashlightOn ? "ON" : "OFF"));
-        spotLight.enabled = isFlashlightOn;
-
-        if (isFlashlightOn)
+        if (!string.IsNullOrEmpty(reloadSound) && AudioManager.instance != null)
         {
-            BatteryChange();
-            spotLight.intensity = maxIntensity;  // reset intensity immediately on toggle on
-        }
-        else
-        {
-            spotLight.intensity = 0f;
+            AudioManager.instance.Play(reloadSound);
         }
     }
-
-    private void BatteryChange()
-    {
-        currentIntensity -= intensityChange * Time.deltaTime;
-        currentIntensity = Mathf.Clamp(currentIntensity, 0f, maxIntensity);
-
-        spotLight.intensity = Mathf.Lerp(0f, maxIntensity, currentIntensity / maxIntensity);
-
-        if (currentIntensity <= 0)
-        {
-            spotLight.enabled = false;
-        }
-    }
-
 }

@@ -38,12 +38,12 @@ public class PlayerInteraction : MonoBehaviour
         HandleInteraction();
         IconPoint();
 
-        if (InventoryManager.instance.hasFlashlight && Input.GetKeyDown(KeyCode.F))
-        {
-            flashlightSystem.ToggleFlashlight(!flashlightSystem.spotLight.enabled);
-        }
-        HandleInteraction();
-        IconPoint();
+        //if (InventoryManager.instance.hasFlashlight && Input.GetKeyDown(KeyCode.F))
+        //{
+        //    flashlightSystem.ToggleFlashlight(!flashlightSystem.spotLight.enabled);
+        //}
+        //HandleInteraction();
+        //IconPoint();
     }
 
     private void HandleInteraction()

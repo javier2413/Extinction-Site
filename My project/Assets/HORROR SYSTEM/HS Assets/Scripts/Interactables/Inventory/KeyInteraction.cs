@@ -8,17 +8,24 @@ public class KeyInteraction : InteractiveItem
     {
         base.Interact(player);
 
-        this.playerInventory = player.GetComponent<InventorySystem>();
+        playerInventory = player.GetComponent<InventorySystem>();
 
-        var itemHasBeenAdded = playerInventory.AddItem(itemId, count, this);
-        if (itemHasBeenAdded)
+        if (playerInventory != null)
         {
-            AudioManager.instance.Play(pickUpSound);
-            Destroy(0);
+            bool itemHasBeenAdded = playerInventory.AddItem(itemId, count, this);
+            if (itemHasBeenAdded)
+            {
+                AudioManager.instance.Play(pickUpSound);
+                Destroy(gameObject);  // Destroy the key object in the scene
+            }
+            else
+            {
+                FailurePickUp();
+            }
         }
         else
         {
-            FailurePickUp();
+            Debug.LogWarning("Player does not have an InventorySystem component!");
         }
     }
 
@@ -27,3 +34,4 @@ public class KeyInteraction : InteractiveItem
         playerInventory.DropItems(itemId, 1);
     }
 }
+
