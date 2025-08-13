@@ -38007,6 +38007,18 @@ PrefabInstance:
       propertyPath: GOCanvas
       value: 
       objectReference: {fileID: 1941173342}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_Height
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_Radius
+      value: 0.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_BaseOffset
+      value: 0.69
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -62846,6 +62858,18 @@ PrefabInstance:
       propertyPath: GOCanvas
       value: 
       objectReference: {fileID: 1941173342}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_Height
+      value: 1.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_Radius
+      value: 0.74
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_BaseOffset
+      value: 0.64
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -63184,7 +63208,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.093333334
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 1103548c80cc73c4ead5beae3ff84915, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: d4403f190f120dd4f9597c4c39698e73, type: 2}
   m_BuildHeightMesh: 1
 --- !u!4 &1992047976
 Transform:
@@ -67904,6 +67928,18 @@ PrefabInstance:
     - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
       propertyPath: m_Speed
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_Height
+      value: 1.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_Radius
+      value: 0.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_BaseOffset
+      value: 0.69
       objectReference: {fileID: 0}
     - target: {fileID: 9119682726689401253, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
       propertyPath: m_Acceleration
