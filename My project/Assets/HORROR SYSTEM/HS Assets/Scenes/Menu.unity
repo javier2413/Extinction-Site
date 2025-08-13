@@ -211,7 +211,6 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
-  m_ScrollDeltaPerTick: 6
 --- !u!114 &274518835 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 235008348235601239, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
@@ -1803,7 +1802,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1602530737
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2673,7 +2672,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4895681482249129466, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5140704965739646033, guid: d0a25fa4a1a31ce4e878a554cdf288ab, type: 3}
       propertyPath: m_IsActive

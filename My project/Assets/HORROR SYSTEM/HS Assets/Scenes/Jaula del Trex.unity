@@ -9737,7 +9737,7 @@ MonoBehaviour:
   Trex: {fileID: 815747732}
   velocidad: 1.45
   Persiguiendo: 0
-  Rango: 14.2
+  Rango: 40.1
   objetivo: {fileID: 767497555}
   Animation: {fileID: 815747733}
   NombreAnimacionCaminata: runheadloop
@@ -9795,7 +9795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 767497555}
   fieldOfView: 97
-  detectionRadius: 45.3
+  detectionRadius: 54.3
 --- !u!4 &815747739 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1142890382434904257, guid: 99c579c6ef9128d4494fb43c7e957b0b, type: 3}

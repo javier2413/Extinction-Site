@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/HORROR SYSTEM/HS Assets/Scenes/Menu_Scene_ALT.unity
+    path: Assets/HORROR SYSTEM/HS Assets/Scenes/Menu.unity
     guid: 9e82a0b9ab9501a4b82ab12eea02e492
   - enabled: 1
     path: Assets/HORROR SYSTEM/HS Assets/Scenes/Demo_Scene.unity
