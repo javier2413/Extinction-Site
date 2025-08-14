@@ -35,7 +35,9 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
-        HandleInteraction();
+        InputManager.instance.SetInteractionTriggered(false);
+        InputManager.instance.SetCrouchTriggered(false);
+
         IconPoint();
 
         //if (InventoryManager.instance.hasFlashlight && Input.GetKeyDown(KeyCode.F))

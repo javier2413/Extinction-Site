@@ -69,7 +69,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Aiming",
+                    "name": "RockThrow",
                     "type": "Button",
                     "id": "1047a457-e730-4eab-a851-bbfb9511c9be",
                     "expectedControlType": "",
@@ -87,10 +87,28 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Combat",
+                    "name": "Flash",
                     "type": "Button",
-                    "id": "5ce0ed82-71a5-439f-bbd8-a334348b83a4",
-                    "expectedControlType": "",
+                    "id": "e0685327-1377-4b21-a66b-7c3a85ec2277",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Recharge",
+                    "type": "Button",
+                    "id": "63a22fec-17f3-4099-bfbe-441883d89f65",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Crouch",
+                    "type": "Button",
+                    "id": "9e129e1b-bb83-4fb0-bffa-def1f287d18c",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -198,17 +216,6 @@
                 },
                 {
                     "name": "",
-                    "id": "ce2c494c-060a-4be7-acb1-f604399a003a",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";PC",
-                    "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "7449ca92-943e-427d-bac5-a3c1d9865f88",
                     "path": "<Keyboard>/f",
                     "interactions": "",
@@ -221,11 +228,11 @@
                 {
                     "name": "",
                     "id": "561cf461-ff64-4140-82a6-2aaa1949fb3c",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Keyboard>/h",
                     "interactions": "",
                     "processors": "",
                     "groups": ";PC",
-                    "action": "Aiming",
+                    "action": "RockThrow",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -242,23 +249,45 @@
                 },
                 {
                     "name": "",
-                    "id": "d692426c-c138-43f3-b119-1940b48d6c6d",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";PC",
-                    "action": "Combat",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "be667b13-bdcc-46d7-812d-fe5766c0c38f",
                     "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "ScaleVector2(x=0.1,y=0.07)",
                     "groups": ";PC",
                     "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f85a80ca-7b9b-44e7-b7ce-b1d767dee102",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Flash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "83853566-7e66-4b35-9583-45bc91a3b7c4",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Recharge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4e32d3c3-08a1-4482-b2da-3dd210bc0643",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Crouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
