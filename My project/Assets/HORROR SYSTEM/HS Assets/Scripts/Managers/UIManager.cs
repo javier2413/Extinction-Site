@@ -48,8 +48,6 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         interactionPanel.SetActive(true);
-
-        notePanel.SetActive(false);
         inventoryPanel.SetActive(false);
         pauseMenuPanel.SetActive(false);
 

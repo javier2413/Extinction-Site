@@ -1,25 +1,20 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    [Header("Interaction Settings")]
     public float interactionDistance = 1.2f;
-
-    [Header("Interaction UI")]
     public Image interactionIcon;
     public TMP_Text interactionText;
-
-    [Header("Detection Settings")]
     public LayerMask obstacleLayer;
 
-    private RectTransform iconRectTransform;
     private GameObject currentObject;
     private Transform interactionPoint;
+    private RectTransform iconRectTransform;
     private float interactionPointHeight = 1f;
 
-    private void Start()
+    void Start()
     {
         interactionPoint = new GameObject("InteractionPoint").transform;
         interactionPoint.SetParent(transform);
@@ -30,66 +25,64 @@ public class PlayerInteraction : MonoBehaviour
         interactionText.text = null;
     }
 
-    private void Update()
+    void Update()
     {
-        HandleInteraction();
-        IconPoint();
+        HandleInteractionCheck();
+        UpdateIconPosition();
     }
 
-    private void HandleInteraction()
+    void HandleInteractionCheck()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(interactionPoint.position, interactionDistance);
-        Transform closestObject = null;
-        float minDistance = float.MaxValue;
+        Collider[] hits = Physics.OverlapSphere(interactionPoint.position, interactionDistance);
+        Transform closest = null;
+        float minDist = float.MaxValue;
 
-        foreach (Collider collider in hitColliders)
+        foreach (Collider col in hits)
         {
-            var interactable = collider.GetComponent<InteractiveObject>();
+            var interactable = col.GetComponent<InteractiveObject>();
             if (interactable == null) continue;
 
-            float distance = Vector3.Distance(interactionPoint.position, collider.transform.position);
-            if (distance < minDistance)
+            float dist = Vector3.Distance(interactionPoint.position, col.transform.position);
+            if (dist < minDist)
             {
-                minDistance = distance;
-                closestObject = collider.transform;
+                minDist = dist;
+                closest = col.transform;
             }
         }
 
-        SetCurrentObject(closestObject != null ? closestObject.gameObject : null);
+        SetCurrentObject(closest != null ? closest.gameObject : null);
 
-        if (closestObject != null && Input.GetKeyDown(KeyCode.E))
+        if (closest != null && Input.GetKeyDown(KeyCode.E))
         {
-            PickUpObject(closestObject.gameObject);
+            closest.GetComponent<InteractiveObject>()?.Interact(gameObject);
         }
     }
 
-    public void PickUpObject(GameObject objectToPick)
+    void SetCurrentObject(GameObject obj)
     {
-        objectToPick.GetComponent<InteractiveObject>()?.Interact(gameObject);
+        currentObject = obj;
+
+        // Si hay un panel de nota abierto, no mostrar icono
+        if (NoteManagerUI.instance.IsNoteOpen())
+        {
+            interactionIcon.gameObject.SetActive(false);
+            interactionText.text = null;
+            return;
+        }
+
+        interactionIcon.gameObject.SetActive(currentObject != null);
+        interactionText.text = currentObject != null ? "Interact (E)" : null;
     }
 
-    private void IconPoint()
+    void UpdateIconPosition()
     {
         if (currentObject == null || interactionIcon == null || iconRectTransform == null || Camera.main == null)
             return;
 
         Transform iconPoint = currentObject.transform.Find("IconPoint");
-        if (iconPoint == null)
-            return;
+        if (iconPoint == null) return;
 
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(iconPoint.position);
-        iconRectTransform.position = screenPos;
-    }
-
-    public void SetCurrentObject(GameObject obj)
-    {
-        currentObject = obj;
-        interactionIcon.gameObject.SetActive(currentObject != null);
-        UpdateInteractionText();
-    }
-
-    private void UpdateInteractionText()
-    {
-        interactionText.text = currentObject != null ? $"Interact (E)" : null;
+        iconRectTransform.position = Camera.main.WorldToScreenPoint(iconPoint.position);
     }
 }
+
