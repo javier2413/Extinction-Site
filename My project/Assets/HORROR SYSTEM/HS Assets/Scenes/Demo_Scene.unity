@@ -19305,8 +19305,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.4565887, y: 1, z: 1.104805}
-  m_Center: {x: -0.23538971, y: 0, z: 0.052402496}
+  m_Size: {x: 2.4565887, y: 1, z: 0.8865814}
+  m_Center: {x: -0.23538971, y: 0, z: -0.05670929}
 --- !u!4 &1924520873
 Transform:
   m_ObjectHideFlags: 0
@@ -19334,7 +19334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33f32ded411011a4a9d5b5f6aebe3721, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Nivel: JauladelTrex
+  Nivel: Jaula del Trex
 --- !u!1001 &1940124151
 PrefabInstance:
   m_ObjectHideFlags: 0
