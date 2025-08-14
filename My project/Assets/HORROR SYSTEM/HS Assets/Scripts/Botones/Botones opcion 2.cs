@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Botonesopcion2 : MonoBehaviour
 {
+    public string Nivel;
     public void CargarEscena(string scene)
     {
         SceneManager.LoadScene(scene);
@@ -19,5 +20,6 @@ public class Botonesopcion2 : MonoBehaviour
     public void ClickToMenu()
     {
         SceneManager.LoadScene(0);
+        SceneManager.LoadScene(Nivel);
     }
 }
