@@ -434,6 +434,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9621fe20aa4d12a40b79abf0bd6e235c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 32273489}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9621fe20aa4d12a40b79abf0bd6e235c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 32273491}
   m_SourcePrefab: {fileID: 100100000, guid: 9621fe20aa4d12a40b79abf0bd6e235c, type: 3}
 --- !u!1 &32273488 stripped
 GameObject:
@@ -466,6 +469,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9621fe20aa4d12a40b79abf0bd6e235c, type: 3}
   m_PrefabInstance: {fileID: 32273487}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &32273491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32273488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bdf96b42168e1044b8fe26931a8b5fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 8
+  count: 1
+  pickUpSound: Key
+  failurePickUpSound: PickUpFailed
+  avalaibleInteractions: 01000000
 --- !u!1 &55907665
 GameObject:
   m_ObjectHideFlags: 0
@@ -5937,6 +5957,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9621fe20aa4d12a40b79abf0bd6e235c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1059812909}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9621fe20aa4d12a40b79abf0bd6e235c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1059812911}
   m_SourcePrefab: {fileID: 100100000, guid: 9621fe20aa4d12a40b79abf0bd6e235c, type: 3}
 --- !u!1 &1059812908 stripped
 GameObject:
@@ -5969,6 +5992,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9621fe20aa4d12a40b79abf0bd6e235c, type: 3}
   m_PrefabInstance: {fileID: 1059812907}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1059812911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059812908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bdf96b42168e1044b8fe26931a8b5fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 8
+  count: 1
+  pickUpSound: Key
+  failurePickUpSound: PickUpFailed
+  avalaibleInteractions: 01000000
 --- !u!1 &1079161647
 GameObject:
   m_ObjectHideFlags: 0
@@ -7883,8 +7923,37 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5015426573749216455, guid: 6a4595b6bfbcc804db85f62a4f93de51, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1314784495}
   m_SourcePrefab: {fileID: 100100000, guid: 6a4595b6bfbcc804db85f62a4f93de51, type: 3}
+--- !u!1 &1314784494 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5015426573749216455, guid: 6a4595b6bfbcc804db85f62a4f93de51, type: 3}
+  m_PrefabInstance: {fileID: 1314784493}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1314784495
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314784494}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.9102026, y: 0.8544054, z: 1.02422}
+  m_Center: {x: 0.00000024279055, y: 0.4272046, z: 0.00000035577133}
 --- !u!1 &1327464350
 GameObject:
   m_ObjectHideFlags: 0
