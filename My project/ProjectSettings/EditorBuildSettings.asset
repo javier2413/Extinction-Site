@@ -17,5 +17,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/HORROR SYSTEM/HS Assets/Scenes/GameOver.unity
     guid: 2713b5c8488321d44b991ba8cf131134
+  - enabled: 1
+    path: Assets/HORROR SYSTEM/HS Assets/Scenes/Jaula del Trex.unity
+    guid: 3ded96f23fce42a4b97701544bda30cf
+  - enabled: 1
+    path: Assets/HORROR SYSTEM/HS Assets/Scenes/Muelle.unity
+    guid: 4d3f95d60c37f53489619f2fd40d4e8f
+  - enabled: 1
+    path: Assets/HORROR SYSTEM/HS Assets/Scenes/Victoria.unity
+    guid: 95302effdc618974692115528fa24095
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 5394f581e496a94499b3f83cf9972e3b, type: 3}
