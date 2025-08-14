@@ -8911,7 +8911,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1305124586}
   fieldOfView: 97
-  detectionRadius: 54.3
+  detectionRadius: 62.6
 --- !u!4 &815747739 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1142890382434904257, guid: 99c579c6ef9128d4494fb43c7e957b0b, type: 3}
