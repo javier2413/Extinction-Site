@@ -3915,6 +3915,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 568724557696901133, guid: 3944e3199344e7643b7d6f123e8a5777, type: 3}
+      propertyPath: Nivel
+      value: GameOver
+      objectReference: {fileID: 0}
+    - target: {fileID: 568724557696901133, guid: 3944e3199344e7643b7d6f123e8a5777, type: 3}
       propertyPath: GOCanvas
       value: 
       objectReference: {fileID: 0}
