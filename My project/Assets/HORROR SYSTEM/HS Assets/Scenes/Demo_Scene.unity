@@ -4422,6 +4422,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wall Door 02
       objectReference: {fileID: 0}
+    - target: {fileID: 2025503266058111224, guid: 01f7094c0e795ad47b0ef77f3cf2ae66, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2025503266058409176, guid: 01f7094c0e795ad47b0ef77f3cf2ae66, type: 3}
       propertyPath: m_LocalPosition.x
       value: 127.88
@@ -18945,6 +18949,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lab
       objectReference: {fileID: 0}
+    - target: {fileID: 517865221858601073, guid: b429421ca9d1a7e4d9c1f8d49aad3ec0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2517065226663516196, guid: b429421ca9d1a7e4d9c1f8d49aad3ec0, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
@@ -19305,8 +19313,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.4565887, y: 1, z: 1.104805}
-  m_Center: {x: -0.23538971, y: 0, z: 0.052402496}
+  m_Size: {x: 2.4565887, y: 1, z: 0.8865814}
+  m_Center: {x: -0.23538971, y: 0, z: -0.05670929}
 --- !u!4 &1924520873
 Transform:
   m_ObjectHideFlags: 0
@@ -19334,7 +19342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33f32ded411011a4a9d5b5f6aebe3721, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Nivel: JauladelTrex
+  Nivel: Jaula del Trex
 --- !u!1001 &1940124151
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20176,7 +20184,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2075800484
 Transform:
   m_ObjectHideFlags: 0
@@ -20660,6 +20668,10 @@ PrefabInstance:
     - target: {fileID: 2749057412204690137, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
       propertyPath: m_Name
       value: Raptorroot
+      objectReference: {fileID: 0}
+    - target: {fileID: 2749057412204690137, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4637199018511479564, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
       propertyPath: player
