@@ -52,9 +52,6 @@ public class UIManager : MonoBehaviour
         notePanel.SetActive(false);
         inventoryPanel.SetActive(false);
         pauseMenuPanel.SetActive(false);
-        ammoPanel.SetActive(false);
-        knifePanel.SetActive(false);
-        crosshairPanel.SetActive(false);
 
         notificationText.text = null;
 

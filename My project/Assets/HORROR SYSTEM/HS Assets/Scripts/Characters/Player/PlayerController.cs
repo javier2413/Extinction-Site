@@ -27,20 +27,17 @@ public class PlayerController : MonoBehaviour
 
     [Header("Interaction")]
     public float interactionDistance = 3f;
-    public LayerMask doorLayer;
+    public LayerMask interactionLayer;
+    public GameObject pickUpCanvas;
 
     [Header("Flashlight Settings")]
     public FlashlightSystem flashlightSystem;
-    public string flashlightSound;
-    public string getFlashlightSound;
 
-    // Private fields
     private float verticalVelocity;
     private float cameraPitch;
     private bool isCrouching = false;
-    private bool isFlashlight = false;
+    private bool isFlashlightOn = false;
 
-    // Input placeholders
     private Vector2 moveInput;
     private Vector2 lookInput;
     private bool sprintInput;
@@ -50,184 +47,101 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        if (controller == null)
-            controller = GetComponent<CharacterController>();
-        if (flashlightSystem == null)
-            flashlightSystem = GetComponentInChildren<FlashlightSystem>();
+        if (controller == null) controller = GetComponent<CharacterController>();
 
         Vector3 camPos = playerCamera.localPosition;
         camPos.y = standingHeight - 0.1f;
         playerCamera.localPosition = camPos;
+
+        // Make sure controller center is correct
+        controller.center = new Vector3(0, standingHeight / 2, 0);
     }
 
     void Update()
     {
         GatherInput();
-
         HandleLook();
         HandleMovement();
-        HandleCrouchInput();
+        HandleCrouch();
         HandleFlashlightToggle();
-        TryInteract();
-
+        HandleInteract();
     }
 
-    //gather inputs to move camera
     void GatherInput()
     {
         moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         sprintInput = Input.GetKey(KeyCode.LeftShift);
-        crouchToggleInput = InputManager.instance.CrouchTriggered;
+        crouchToggleInput = Input.GetKeyDown(KeyCode.C);
         interactInput = Input.GetKeyDown(KeyCode.E);
         flashlightToggleInput = Input.GetKeyDown(KeyCode.F);
     }
 
-    //Look around with camera
     void HandleLook()
     {
         cameraPitch -= lookInput.y * lookSpeed;
         cameraPitch = Mathf.Clamp(cameraPitch, bottomClamp, topClamp);
         playerCamera.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
-
         transform.Rotate(Vector3.up * lookInput.x * lookSpeed);
     }
 
-    //player movement handle
     void HandleMovement()
     {
         Vector3 moveDirection = transform.right * moveInput.x + transform.forward * moveInput.y;
-
         float speed = isCrouching ? crouchSpeed : (sprintInput ? runSpeed : walkSpeed);
         Vector3 velocity = moveDirection.normalized * speed;
 
+        // Animation
         playerAnimations?.SetMovementParameters(moveInput.x, moveInput.y);
-
-        bool isRunning = !isCrouching && sprintInput && (moveInput.magnitude > 0.1f);
+        bool isRunning = !isCrouching && sprintInput && moveInput.magnitude > 0.1f;
         playerAnimations?.RunningAnimation(isRunning);
 
+        // Gravity
         if (controller.isGrounded && verticalVelocity < 0)
-            verticalVelocity = -2f;
+            verticalVelocity = -2f; // keep grounded
 
         verticalVelocity += gravity * Time.deltaTime;
         velocity.y = verticalVelocity;
 
-        Debug.Log($"IsGrounded: {controller.isGrounded}, VerticalVelocity: {verticalVelocity}");
-
         controller.Move(velocity * Time.deltaTime);
     }
 
-
-    void HandleCrouchInput()
+    void HandleCrouch()
     {
-        if (InputManager.instance.CrouchTriggered)
-        {
-            isCrouching = !isCrouching;                        // toggle crouch
-            InputManager.instance.SetCrouchTriggered(false);   // reset the trigger
-            UpdateCrouchState();                               // adjust controller & camera
-        }
-    }
+        if (crouchToggleInput) isCrouching = !isCrouching;
 
-    void UpdateCrouchState()
-    {
         controller.height = isCrouching ? crouchHeight : standingHeight;
-        controller.center = new Vector3(0, controller.height / 2f, 0);
+        controller.center = new Vector3(0, controller.height / 2, 0);
 
         Vector3 camPos = playerCamera.localPosition;
         camPos.y = isCrouching ? crouchHeight - 0.1f : standingHeight - 0.1f;
         playerCamera.localPosition = camPos;
     }
 
-
-    public void PlayFootstep()
-    {
-        AudioManager.instance.Play("FootstepSound");
-    }
-
-    //Flashlight
-
-
-
     void HandleFlashlightToggle()
     {
-        var input = InputManager.instance;
-
-        // Toggle flashlight
-        if (input.FlashlightTriggered)
+        if (flashlightToggleInput && flashlightSystem != null)
         {
-            ToggleFlashlight();
-            input.SetFlashlightTriggered(false);
-        }
-
-        // Recharge battery
-        if (input.RechargeTriggered)
-        {
-            flashlightSystem.RechargeBattery();
-            input.SetRechargeTriggered(false);
-        }
-
-        // Flash action
-        if (input.FlashTriggered)
-        {
-            flashlightSystem.Flash();  // safely triggers flash
-            input.SetFlashTriggered(false);
+            isFlashlightOn = !flashlightSystem.IsOn();
+            flashlightSystem.ToggleFlashlight(isFlashlightOn);
+            playerAnimations?.SetFlashlightIdle(isFlashlightOn);
         }
     }
 
-    private void ToggleFlashlight()
-    {
-        if (flashlightSystem == null) return;
-
-        isFlashlight = !isFlashlight;
-        flashlightSystem.ToggleFlashlight(isFlashlight);
-        playerAnimations?.SetFlashlightIdle(isFlashlight);
-        AudioManager.instance.Play(getFlashlightSound);
-    }
-
-
-    private void FlashlightSwitch()
-    {
-        isFlashlight = !isFlashlight;
-        playerAnimations?.SetFlashlightIdle(isFlashlight);
-        AudioManager.instance.Play(getFlashlightSound);
-        flashlightSystem.ToggleFlashlight(isFlashlight);
-    }
-
-    public void FlashlightDropAnimationEvent()
-    {
-        AudioManager.instance.Play(getFlashlightSound);
-        //InventoryManager.instance.SetFlashlightActiveOnPlayer(false);
-    }
-
-    public void FlashlightSwitchAniamtionEvent()
-    {
-        // Code that should run when this event fires, e.g. play a sound or toggle some animation state
-        AudioManager.instance.Play(getFlashlightSound);
-        flashlightSystem.ToggleFlashlight(false);
-    }
-
-    public void FlashlightSystemAnimationEvent()
-    {
-        // Code for this event, e.g. toggle the flashlight's light on/off
-        AudioManager.instance.Play(flashlightSound);
-        flashlightSystem.ToggleFlashlight(isFlashlight);
-    }
-
-    //Door
-
-    void TryInteract()
+    void HandleInteract()
     {
         if (!interactInput) return;
 
         Ray ray = new Ray(playerCamera.position, playerCamera.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance))
+        if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance, interactionLayer))
         {
-            var interactive = hit.collider.GetComponent<InteractiveObject>();
-            if (interactive != null)
-            {
-                interactive.Interact(gameObject);
-            }
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            if (interactable != null)
+                interactable.Interact(gameObject);
         }
     }
 }
+
+
+
 

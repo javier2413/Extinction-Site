@@ -5,6 +5,9 @@ public class FlashlightSystem : MonoBehaviour
 {
     [Header("Light Settings")]
     public Light spotLight;
+    public KeyCode toggleKey = KeyCode.F;      // Key to toggle flashlight
+    public KeyCode flashKey = KeyCode.Space;       // Key to trigger flash (same as toggle for hold/release)
+    public KeyCode rechargeKey = KeyCode.R;    // Key to manually recharge battery
     public float maxIntensity = 3f;
     public float minIntensity = 0.2f;
     public float flashIntensity = 5f;
@@ -30,14 +33,6 @@ public class FlashlightSystem : MonoBehaviour
     private bool isFlashing = false;
     private bool flashOnCooldown = false;
 
-    private InputManager input;
-
-    private void Awake()
-    {
-        // Cache the InputManager reference
-        input = InputManager.instance;
-    }
-
     private void Start()
     {
         if (spotLight == null)
@@ -57,73 +52,60 @@ public class FlashlightSystem : MonoBehaviour
         playerAnimations?.SetFlashlightIdle(false);
     }
 
+
     private void Update()
     {
-        if (input == null) return;
+        // Toggle flashlight on key press
+        if (Input.GetKeyDown(toggleKey))
+        {
+            ToggleFlashlight(!isFlashlightOn);
+        }
 
-        HandleFlashlightToggle();
-        HandleRecharge();
-        HandleFlashAction();
+        // Manual recharge key (optional)
+        if (Input.GetKeyDown(rechargeKey))
+        {
+            RechargeBattery();
+        }
+
+        if (Input.GetKeyUp(flashKey) && !isFlashing && !flashOnCooldown)
+        {
+            StartCoroutine(FlashCoroutine());
+        }
 
         if (isFlashlightOn)
         {
-            DrainBattery();
+            // Drain battery continuously if not flashing
+            if (!isFlashing)
+            {
+                currentBattery -= intensityDrainRate * Time.deltaTime;
+                currentBattery = Mathf.Clamp(currentBattery, 0f, maxBattery);
+
+                // Update intensity based on battery
+                float batteryRatio = currentBattery / maxBattery;
+                spotLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, batteryRatio);
+
+                // Auto turn off if battery empty
+                if (currentBattery <= 0)
+                {
+                    ToggleFlashlight(false);
+                    return;
+                }
+            }
+
             CheckForRaptorsInLight();
+
+            // Trigger flash on key release if possible
+            if (Input.GetKeyUp(flashKey) && !isFlashing && !flashOnCooldown)
+            {
+                StartCoroutine(FlashCoroutine());
+            }
         }
     }
 
-    // Public wrapper to trigger the flash
-    public void Flash()
+    public bool IsOn()
     {
-        if (!isFlashing && !flashOnCooldown)
-        {
-            StartCoroutine(FlashCoroutine());
-        }
+        return isFlashlightOn;
     }
-
-    private void HandleFlashlightToggle()
-    {
-        if (input.FlashlightTriggered)
-        {
-            ToggleFlashlight(!isFlashlightOn);
-            input.SetFlashlightTriggered(false);
-        }
-    }
-
-    private void HandleRecharge()
-    {
-        if (input.RechargeTriggered)
-        {
-            RechargeBattery();
-            input.SetRechargeTriggered(false);
-        }
-    }
-
-    private void HandleFlashAction()
-    {
-        if (input.FlashTriggered && !isFlashing && !flashOnCooldown)
-        {
-            StartCoroutine(FlashCoroutine());
-            input.SetFlashTriggered(false);
-        }
-    }
-
-    private void DrainBattery()
-    {
-        if (!isFlashing)
-        {
-            currentBattery -= intensityDrainRate * Time.deltaTime;
-            currentBattery = Mathf.Clamp(currentBattery, 0f, maxBattery);
-
-            float batteryRatio = currentBattery / maxBattery;
-            spotLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, batteryRatio);
-
-            if (currentBattery <= 0)
-                ToggleFlashlight(false);
-        }
-    }
-
-    public bool IsOn() => isFlashlightOn;
 
     public void ToggleFlashlight(bool turnOn)
     {
@@ -140,7 +122,17 @@ public class FlashlightSystem : MonoBehaviour
             spotLight.intensity = 0f;
         }
 
+        // Sync animation state
         playerAnimations?.SetFlashlightIdle(turnOn);
+    }
+
+
+    public void RechargeIntensity(float amount)
+    {
+        currentBattery = Mathf.Clamp(currentBattery + amount, 0f, maxBattery);
+
+        float batteryRatio = currentBattery / maxBattery;
+        spotLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, batteryRatio);
     }
 
     private IEnumerator FlashCoroutine()
@@ -156,6 +148,7 @@ public class FlashlightSystem : MonoBehaviour
         float startIntensity = spotLight.intensity;
         float targetIntensity = Mathf.Lerp(minIntensity, maxIntensity, currentBattery / maxBattery);
 
+        // Smoothly return to battery intensity
         while (elapsed < 1f)
         {
             elapsed += Time.deltaTime * rechargeRate;
@@ -165,6 +158,7 @@ public class FlashlightSystem : MonoBehaviour
 
         isFlashing = false;
 
+        // Flash cooldown to prevent spamming
         yield return new WaitForSeconds(flashCooldown);
         flashOnCooldown = false;
     }
@@ -185,7 +179,9 @@ public class FlashlightSystem : MonoBehaviour
                 float angle = Vector3.Angle(spotLight.transform.forward, dirToRaptor);
 
                 if (angle <= halfSpotAngle)
+                {
                     raptor.Stun(stunDuration);
+                }
             }
         }
     }
@@ -195,7 +191,9 @@ public class FlashlightSystem : MonoBehaviour
         currentBattery = maxBattery;
 
         if (!string.IsNullOrEmpty(reloadSound) && AudioManager.instance != null)
+        {
             AudioManager.instance.Play(reloadSound);
+        }
     }
 }
 

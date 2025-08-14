@@ -33,7 +33,6 @@ public class FootstepHandler : MonoBehaviour
         }
     }
 
-
     private Texture2D GetSurfaceTexture()
     {
         RaycastHit hit;
@@ -48,6 +47,32 @@ public class FootstepHandler : MonoBehaviour
         return null;
     }
 
+    // This is the method your animation will call
+    public void PlayFootstep()
+    {
+        Texture2D texture = GetSurfaceTexture();
+        FootstepGroup group = null;
+
+        if (texture != null && footstepGroupsByTexture.TryGetValue(texture, out group))
+        {
+            if (group.audioClips.Length > 0)
+            {
+                int index = Random.Range(0, group.audioClips.Length);
+                footstepAudioSource.PlayOneShot(group.audioClips[index], group.footstepVolume);
+            }
+        }
+        else if (footstepGroups.Count > 0)
+        {
+            // fallback: pick a random footstep from the first group
+            FootstepGroup fallbackGroup = footstepGroups[0];
+            if (fallbackGroup.audioClips.Length > 0)
+            {
+                int index = Random.Range(0, fallbackGroup.audioClips.Length);
+                footstepAudioSource.PlayOneShot(fallbackGroup.audioClips[index], fallbackGroup.footstepVolume);
+            }
+        }
+    }
+
     [System.Serializable]
     public class FootstepGroup
     {
@@ -56,3 +81,4 @@ public class FootstepHandler : MonoBehaviour
         [Range(0, 1)] public float footstepVolume = 1.0f;
     }
 }
+

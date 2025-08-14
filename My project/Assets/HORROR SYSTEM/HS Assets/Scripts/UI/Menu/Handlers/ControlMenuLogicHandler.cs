@@ -8,11 +8,11 @@ using System;
 public class ControlMenuLogicHandler : MonoBehaviour
 {
     [Header("Input Manager")]
-    public InputManager inputManager; // assign your InputManager here
+    public InputManager inputManager; // assign your InputManager in the Inspector
 
     [Header("Rebinding Settings")]
     public Button[] rebindButtons;
-    public string[] actionsToRebind;
+    public string[] actionsToRebind; // e.g., "Move", "Running", "Crouch", "Flashlight", "Flash", "Recharge", "Pause"
 
     [Header("Mouse Sensitivity Settings")]
     public Slider sensitivitySlider;
@@ -56,13 +56,10 @@ public class ControlMenuLogicHandler : MonoBehaviour
             {
                 string bindingJson = PlayerPrefs.GetString(action.id.ToString(), string.Empty);
                 if (!string.IsNullOrEmpty(bindingJson))
-                {
                     action.LoadBindingOverridesFromJson(bindingJson);
-                }
             }
         }
     }
-
 
     private void UpdateButtonText(int buttonIndex)
     {
@@ -113,18 +110,14 @@ public class ControlMenuLogicHandler : MonoBehaviour
         var bindingName = actionAndBinding.Length > 1 ? actionAndBinding[1] : null;
 
         var action = playerControls.FindAction(actionName);
-        if (action == null)
-            return;
+        if (action == null) return;
 
         int bindingIndex = GetBindingIndex(action, bindingName);
-        if (bindingIndex == -1)
-            return;
+        if (bindingIndex == -1) return;
 
         var buttonText = rebindButtons[actionIndex].GetComponentInChildren<TMP_Text>();
         if (buttonText != null)
-        {
             buttonText.text = "Waiting for input";
-        }
 
         action.Disable();
 
@@ -148,7 +141,8 @@ public class ControlMenuLogicHandler : MonoBehaviour
         sensitivityValueText.text = $"{(int)sensitivitySlider.value}";
 
         sensitivitySlider.onValueChanged.AddListener(
-            sensitivity => {
+            sensitivity =>
+            {
                 sensitivityValueText.text = $"{(int)sensitivity}";
                 PlayerPrefs.SetFloat("MouseSensitivity", sensitivity);
                 PlayerPrefs.Save();
@@ -156,6 +150,7 @@ public class ControlMenuLogicHandler : MonoBehaviour
         );
     }
 }
+
 
 
 

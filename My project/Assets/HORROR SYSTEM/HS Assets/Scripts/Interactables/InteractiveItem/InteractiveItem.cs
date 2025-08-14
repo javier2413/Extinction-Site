@@ -1,7 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractiveItem : InteractiveObject
+// Interface for all interactable objects
+public interface IInteractable
+{
+    void Interact(GameObject player = null);
+}
+
+public class InteractiveItem : InteractiveObject, IInteractable
 {
     public string itemId;
     public int count;
@@ -14,6 +20,7 @@ public class InteractiveItem : InteractiveObject
     public override void Interact(GameObject player = null)
     {
         base.Interact(player);
+        // Additional item-specific interaction logic can go here
     }
 
     protected void Start()
@@ -22,7 +29,7 @@ public class InteractiveItem : InteractiveObject
         var item = database.GetItem(itemId);
         if (item == null)
         {
-            Debug.LogError("Item with ID " + itemId + " doesnt exist in Database");
+            Debug.LogError("Item with ID " + itemId + " doesn't exist in Database");
         }
         databaseItem = item;
     }
@@ -53,3 +60,4 @@ public class InteractiveItem : InteractiveObject
         return databaseItem;
     }
 }
+

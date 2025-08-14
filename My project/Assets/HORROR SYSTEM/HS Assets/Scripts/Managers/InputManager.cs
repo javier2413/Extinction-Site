@@ -1,32 +1,41 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
 
 public class InputManager : MonoBehaviour
 {
     public static InputManager instance { get; private set; }
 
+    [Header("Input Action Asset")]
     public InputActionAsset playerControls;
 
+    [Header("Action Map Name")]
     [SerializeField] private string actionMapName = "Player";
 
-    // Actions dictionary for easy access by name
-    public Dictionary<string, InputAction> ActionsDictionary { get; private set; } = new Dictionary<string, InputAction>();
+    // Action names
+    [SerializeField] private string look = "Look";
+    [SerializeField] private string move = "Move";
+    [SerializeField] private string running = "Running";
+    [SerializeField] private string interaction = "Interaction";
+    [SerializeField] private string inventory = "Inventory";
+    [SerializeField] private string pause = "Pause";
+    [SerializeField] private string flashlight = "Flashlight";
+    [SerializeField] private string flash = "Flash";
+    [SerializeField] private string recharge = "Recharge";
+    [SerializeField] private string crouch = "Crouch";
+    [SerializeField] private string rockThrow = "RockThrow";
 
-    // Individual actions
-    public InputAction LookAction { get; private set; }
-    public InputAction MoveAction { get; private set; }
-    public InputAction RunningAction { get; private set; }
-    public InputAction InteractionAction { get; private set; }
-    public InputAction InventoryAction { get; private set; }
-    public InputAction PauseAction { get; private set; }
-    public InputAction FlashlightAction { get; private set; }
-    public InputAction FlashAction { get; private set; }
-    public InputAction RechargeAction { get; private set; }
-    public InputAction RockThrowAction { get; private set; }
-    public InputAction CrouchAction { get; private set; }
-
-    public void SetInteractionTriggered(bool value) => InteractionTriggered = value;
+    // Actions
+    private InputAction lookAction;
+    private InputAction moveAction;
+    private InputAction runningAction;
+    private InputAction interactionAction;
+    private InputAction inventoryAction;
+    private InputAction pauseAction;
+    private InputAction flashlightAction;
+    private InputAction flashAction;
+    private InputAction rechargeAction;
+    private InputAction crouchAction;
+    private InputAction rockThrowAction;
 
     // Input values
     public Vector2 LookInput { get; private set; }
@@ -39,17 +48,16 @@ public class InputManager : MonoBehaviour
     public bool FlashTriggered { get; private set; }
     public bool RechargeTriggered { get; private set; }
     public bool CrouchTriggered { get; private set; }
+    public bool RockThrowTriggered { get; private set; }
 
     private void Awake()
     {
-        // Singleton setup
-        if (instance == null) instance = this;
-        else { Destroy(gameObject); return; }
-
-        DontDestroyOnLoad(gameObject);
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
 
         InitializeInputActions();
-        EnableInputActions();
     }
 
     private void OnEnable() => EnableInputActions();
@@ -59,89 +67,98 @@ public class InputManager : MonoBehaviour
     {
         var map = playerControls.FindActionMap(actionMapName);
 
-        LookAction = map.FindAction("Look");
-        MoveAction = map.FindAction("Move");
-        RunningAction = map.FindAction("Running");
-        InteractionAction = map.FindAction("Interaction");
-        InventoryAction = map.FindAction("Inventory");
-        PauseAction = map.FindAction("Pause");
-        FlashlightAction = map.FindAction("Flashlight");
-        FlashAction = map.FindAction("Flash");
-        RechargeAction = map.FindAction("Recharge");
-        RockThrowAction = map.FindAction("RockThrow");
-        CrouchAction = map.FindAction("Crouch");
+        lookAction = map.FindAction(look);
+        moveAction = map.FindAction(move);
+        runningAction = map.FindAction(running);
+        interactionAction = map.FindAction(interaction);
+        inventoryAction = map.FindAction(inventory);
+        pauseAction = map.FindAction(pause);
+        flashlightAction = map.FindAction(flashlight);
+        flashAction = map.FindAction(flash);
+        rechargeAction = map.FindAction(recharge);
+        crouchAction = map.FindAction(crouch);
+        rockThrowAction = map.FindAction(rockThrow);
 
-        // Populate dictionary
-        ActionsDictionary["Look"] = LookAction;
-        ActionsDictionary["Move"] = MoveAction;
-        ActionsDictionary["Running"] = RunningAction;
-        ActionsDictionary["Interaction"] = InteractionAction;
-        ActionsDictionary["Inventory"] = InventoryAction;
-        ActionsDictionary["Pause"] = PauseAction;
-        ActionsDictionary["Flashlight"] = FlashlightAction;
-        ActionsDictionary["Flash"] = FlashAction;
-        ActionsDictionary["Recharge"] = RechargeAction;
-        ActionsDictionary["RockThrow"] = RockThrowAction;
-        ActionsDictionary["Crouch"] = CrouchAction;
-
-        // Bind events
-        LookAction.performed += ctx => LookInput = ctx.ReadValue<Vector2>();
-        LookAction.canceled += ctx => LookInput = Vector2.zero;
-
-        MoveAction.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
-        MoveAction.canceled += ctx => MoveInput = Vector2.zero;
-
-        RunningAction.performed += ctx => RunningValue = ctx.ReadValue<float>();
-        RunningAction.canceled += ctx => RunningValue = 0f;
-
-        InteractionAction.started += ctx => InteractionTriggered = true;
-        InteractionAction.canceled += ctx => InteractionTriggered = false;
-
-        InventoryAction.started += ctx => InventoryTriggered = true;
-        InventoryAction.canceled += ctx => InventoryTriggered = false;
-
-        PauseAction.started += ctx => PauseTriggered = true;
-        PauseAction.canceled += ctx => PauseTriggered = false;
-
-        FlashlightAction.started += ctx => FlashlightTriggered = true;
-        FlashlightAction.canceled += ctx => FlashlightTriggered = false;
-
-        FlashAction.started += ctx => FlashTriggered = true;
-        FlashAction.canceled += ctx => FlashTriggered = false;
-
-        RechargeAction.started += ctx => RechargeTriggered = true;
-        RechargeAction.canceled += ctx => RechargeTriggered = false;
-
-        CrouchAction.started += ctx => CrouchTriggered = true;
-        CrouchAction.canceled += ctx => CrouchTriggered = false;
+        RegisterInputActions();
     }
-    public InputAction GetActionByName(string name)
-    {
-        if (ActionsDictionary.TryGetValue(name, out var action))
-            return action;
 
-        Debug.LogWarning($"InputManager: Action '{name}' not found.");
-        return null;
+    private void RegisterInputActions()
+    {
+        lookAction.performed += ctx => LookInput = ctx.ReadValue<Vector2>();
+        lookAction.canceled += ctx => LookInput = Vector2.zero;
+
+        moveAction.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
+        moveAction.canceled += ctx => MoveInput = Vector2.zero;
+
+        runningAction.performed += ctx => RunningValue = ctx.ReadValue<float>();
+        runningAction.canceled += ctx => RunningValue = 0f;
+
+        interactionAction.started += ctx => InteractionTriggered = true;
+        interactionAction.canceled += ctx => InteractionTriggered = false;
+
+        inventoryAction.started += ctx => InventoryTriggered = true;
+        inventoryAction.canceled += ctx => InventoryTriggered = false;
+
+        pauseAction.started += ctx => PauseTriggered = true;
+        pauseAction.canceled += ctx => PauseTriggered = false;
+
+        flashlightAction.started += ctx => FlashlightTriggered = true;
+        flashlightAction.canceled += ctx => FlashlightTriggered = false;
+
+        flashAction.started += ctx => FlashTriggered = true;
+        flashAction.canceled += ctx => FlashTriggered = false;
+
+        rechargeAction.started += ctx => RechargeTriggered = true;
+        rechargeAction.canceled += ctx => RechargeTriggered = false;
+
+        crouchAction.started += ctx => CrouchTriggered = true;
+        crouchAction.canceled += ctx => CrouchTriggered = false;
+
+        rockThrowAction.started += ctx => RockThrowTriggered = true;
+        rockThrowAction.canceled += ctx => RockThrowTriggered = false;
     }
 
     private void EnableInputActions()
     {
-        foreach (var action in ActionsDictionary.Values)
-            action.Enable();
+        lookAction.Enable();
+        moveAction.Enable();
+        runningAction.Enable();
+        interactionAction.Enable();
+        inventoryAction.Enable();
+        pauseAction.Enable();
+        flashlightAction.Enable();
+        flashAction.Enable();
+        rechargeAction.Enable();
+        crouchAction.Enable();
+        rockThrowAction.Enable();
     }
 
     private void DisableInputActions()
     {
-        foreach (var action in ActionsDictionary.Values)
-            action.Disable();
+        lookAction.Disable();
+        moveAction.Disable();
+        runningAction.Disable();
+        interactionAction.Disable();
+        inventoryAction.Disable();
+        pauseAction.Disable();
+        flashlightAction.Disable();
+        flashAction.Disable();
+        rechargeAction.Disable();
+        crouchAction.Disable();
+        rockThrowAction.Disable();
     }
 
-    // Setters
+    // Optional setters
+    public void SetInteractionTriggered(bool value) => InteractionTriggered = value;
+    public void SetInventoryTriggered(bool value) => InventoryTriggered = value;
+    public void SetPauseTriggered(bool value) => PauseTriggered = value;
     public void SetFlashlightTriggered(bool value) => FlashlightTriggered = value;
     public void SetFlashTriggered(bool value) => FlashTriggered = value;
     public void SetRechargeTriggered(bool value) => RechargeTriggered = value;
     public void SetCrouchTriggered(bool value) => CrouchTriggered = value;
+    public void SetRockThrowTriggered(bool value) => RockThrowTriggered = value;
 }
+
 
 
 

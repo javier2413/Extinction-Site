@@ -101,6 +101,7 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+
     public void SetCurrentObject(GameObject obj)
     {
         currentObject = obj;
