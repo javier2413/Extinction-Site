@@ -4422,6 +4422,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wall Door 02
       objectReference: {fileID: 0}
+    - target: {fileID: 2025503266058111224, guid: 01f7094c0e795ad47b0ef77f3cf2ae66, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2025503266058409176, guid: 01f7094c0e795ad47b0ef77f3cf2ae66, type: 3}
       propertyPath: m_LocalPosition.x
       value: 127.88
@@ -18945,6 +18949,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lab
       objectReference: {fileID: 0}
+    - target: {fileID: 517865221858601073, guid: b429421ca9d1a7e4d9c1f8d49aad3ec0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2517065226663516196, guid: b429421ca9d1a7e4d9c1f8d49aad3ec0, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
@@ -20176,7 +20184,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2075800484
 Transform:
   m_ObjectHideFlags: 0
@@ -20660,6 +20668,10 @@ PrefabInstance:
     - target: {fileID: 2749057412204690137, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
       propertyPath: m_Name
       value: Raptorroot
+      objectReference: {fileID: 0}
+    - target: {fileID: 2749057412204690137, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4637199018511479564, guid: 52715125ed19d5544bd2c4096f21aee9, type: 3}
       propertyPath: player
