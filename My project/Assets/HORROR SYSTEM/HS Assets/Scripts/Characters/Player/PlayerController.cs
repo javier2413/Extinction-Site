@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
         HandleLook();
         HandleMovement();
-        HandleCrouch();
+        HandleCrouchInput();
         HandleFlashlightToggle();
         TryInteract();
 
@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
         moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         sprintInput = Input.GetKey(KeyCode.LeftShift);
-        crouchToggleInput = Input.GetKeyDown(KeyCode.C);
+        crouchToggleInput = InputManager.instance.CrouchTriggered;
         interactInput = Input.GetKeyDown(KeyCode.E);
         flashlightToggleInput = Input.GetKeyDown(KeyCode.F);
     }
@@ -118,11 +118,18 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void HandleCrouch()
+    void HandleCrouchInput()
     {
-        if (crouchToggleInput)
-            isCrouching = !isCrouching;
+        if (InputManager.instance.CrouchTriggered)
+        {
+            isCrouching = !isCrouching;                        // toggle crouch
+            InputManager.instance.SetCrouchTriggered(false);   // reset the trigger
+            UpdateCrouchState();                               // adjust controller & camera
+        }
+    }
 
+    void UpdateCrouchState()
+    {
         controller.height = isCrouching ? crouchHeight : standingHeight;
         controller.center = new Vector3(0, controller.height / 2f, 0);
 
@@ -131,6 +138,7 @@ public class PlayerController : MonoBehaviour
         playerCamera.localPosition = camPos;
     }
 
+
     public void PlayFootstep()
     {
         AudioManager.instance.Play("FootstepSound");
@@ -138,14 +146,44 @@ public class PlayerController : MonoBehaviour
 
     //Flashlight
 
+
+
     void HandleFlashlightToggle()
     {
-        if (flashlightToggleInput && flashlightSystem != null)
+        var input = InputManager.instance;
+
+        // Toggle flashlight
+        if (input.FlashlightTriggered)
         {
-            FlashlightSwitch();
-            flashlightToggleInput = false; // reset input flag after toggling
+            ToggleFlashlight();
+            input.SetFlashlightTriggered(false);
+        }
+
+        // Recharge battery
+        if (input.RechargeTriggered)
+        {
+            flashlightSystem.RechargeBattery();
+            input.SetRechargeTriggered(false);
+        }
+
+        // Flash action
+        if (input.FlashTriggered)
+        {
+            flashlightSystem.Flash();  // safely triggers flash
+            input.SetFlashTriggered(false);
         }
     }
+
+    private void ToggleFlashlight()
+    {
+        if (flashlightSystem == null) return;
+
+        isFlashlight = !isFlashlight;
+        flashlightSystem.ToggleFlashlight(isFlashlight);
+        playerAnimations?.SetFlashlightIdle(isFlashlight);
+        AudioManager.instance.Play(getFlashlightSound);
+    }
+
 
     private void FlashlightSwitch()
     {
