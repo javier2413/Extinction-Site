@@ -1287,25 +1287,22 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2749057412204690137}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3b9aa65e201b7c4c9d18021fd417e72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 9119682726689401253}
-  Player: {fileID: 0}
-  GOCanvas: {fileID: 0}
-  RadioDeteccion: 15.8
-  AnguloFOV: 276.5
-  VisionPerdida: 46.9
-  moveRadious: 13.14
+  moveRadious: 0
   rotationSpeed: 5
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 8
+  Player: {fileID: 0}
+  RadioDeteccion: 0
+  AnguloFOV: 0
+  VisionPerdida: 0
   ObscructionLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 0
+  GOCanvas: {fileID: 0}
 --- !u!95 &1199529781299846411
 Animator:
   serializedVersion: 5
@@ -2329,7 +2326,6 @@ GameObject:
   - component: {fileID: 5477131187443948346}
   - component: {fileID: 99336249261962212}
   - component: {fileID: 261685452219759693}
-  - component: {fileID: 4637199018511479564}
   m_Layer: 0
   m_Name: PBR_Velociraptor_Blue
   m_TagString: Untagged
@@ -2584,27 +2580,6 @@ CapsuleCollider:
   m_Height: 2.160306
   m_Direction: 1
   m_Center: {x: 2.0952642e-11, y: 1.18, z: -0.06}
---- !u!114 &4637199018511479564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3961525740613387031}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 826ca1c44ee9fd3419b3f4f6a679dd08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  navAgent: {fileID: 0}
-  player: {fileID: 0}
-  obstructionLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  detectionRadius: 15.8
-  fovAngle: 276.5
-  moveRadius: 46.9
-  rotationSpeed: 13.14
 --- !u!1 &3996492944480086971
 GameObject:
   m_ObjectHideFlags: 0

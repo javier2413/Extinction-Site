@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6776592778801809066}
   - component: {fileID: 8580346022717291703}
   - component: {fileID: 1424167996396353839}
-  - component: {fileID: -3737608617721506217}
   - component: {fileID: 8292598735931285554}
   m_Layer: 5
   m_Name: Inventory_Item
@@ -94,22 +93,9 @@ MonoBehaviour:
   itemId: 
   itemDescription: 
   itemSprite: {fileID: 0}
-  itemActions: 
   amountText: {fileID: 7852591342247331252}
-  spawnPoint: {fileID: 0}
---- !u!114 &-3737608617721506217
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4828355330458583504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9ed0e4ae5ac34f46a64d38772d5ab8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   contextMenuPrefab: {fileID: 5607984976711554331, guid: b33f1d15abd90a34db5890316ee81940, type: 3}
+  spawnPoint: {fileID: 0}
 --- !u!225 &8292598735931285554
 CanvasGroup:
   m_ObjectHideFlags: 0

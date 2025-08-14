@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class MedkitInteraction : InteractiveItem
 {
+    public int healAmount = 50; // Cantidad de vida que cura el medkit
+
     public override void Interact(GameObject player = null)
     {
         base.Interact(player);
@@ -17,7 +19,7 @@ public class MedkitInteraction : InteractiveItem
         if (itemHasBeenAdded)
         {
             AudioManager.instance.Play(pickUpSound);
-            Destroy(gameObject); // Destroy the medkit in the scene
+            Destroy(gameObject); // Destruye el medkit en la escena
         }
         else
         {
@@ -27,30 +29,18 @@ public class MedkitInteraction : InteractiveItem
 
     public override void UseInInventory()
     {
-        // Find the player dynamically
+        // Buscar al jugador en la escena
         var player = GameObject.FindWithTag("Player");
-        if (player == null)
-        {
-            Debug.LogError("Player object not found in scene.");
-            return;
-        }
+        if (player == null) return;
 
         var playerHealth = player.GetComponent<PlayerHealth>();
-        if (playerHealth == null)
-        {
-            Debug.LogError("PlayerHealth component not found on player.");
-            return;
-        }
+        if (playerHealth == null) return;
 
+        // Solo usar si no tiene la salud completa
         if (playerHealth.currentHealth < playerHealth.maxHealth)
         {
-            playerHealth.SetMaxHealth(); // or Heal(amount) if you want partial healing
+            playerHealth.Heal(healAmount);
             InventorySystem.instance.SpendSingleItem(itemId);
-            Debug.Log("Used medkit: Health restored.");
-        }
-        else
-        {
-            Debug.Log("Maximum health reached, medkit not used.");
         }
     }
 
@@ -64,5 +54,6 @@ public class MedkitInteraction : InteractiveItem
         return count.ToString();
     }
 }
+
 
 

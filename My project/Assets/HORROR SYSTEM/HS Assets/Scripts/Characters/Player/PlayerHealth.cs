@@ -29,11 +29,9 @@ public class PlayerHealth : MonoBehaviour
     private Coroutine bloodCoroutine;
 
     private bool isPlayerDead = false;
-    private PlayerAnimations playerAnimations;
 
     private void Start()
     {
-        playerAnimations = GetComponent<PlayerAnimations>();
         currentHealth = maxHealth;
         UpdateHealthUI();
     }
@@ -45,15 +43,9 @@ public class PlayerHealth : MonoBehaviour
         currentHealth += value;
         currentHealth = Mathf.Min(currentHealth, maxHealth);
         UpdateHealthUI();
-    }
 
-    public void SetMaxHealth()
-    {
-        if (isPlayerDead) return;
-
-        currentHealth = maxHealth;
-        UpdateHealthUI();
-        AudioManager.instance.Play(treatmentSound);
+        if (!string.IsNullOrEmpty(treatmentSound))
+            AudioManager.instance.Play(treatmentSound);
     }
 
     public void TakeDamage(int damage)
@@ -67,40 +59,21 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth -= damage;
         currentHealth = Mathf.Max(currentHealth, 0);
-
         UpdateHealthUI();
 
         if (currentHealth <= 0)
-        {
             Die();
+    }
+
+    private void Die()
+    {
+        isPlayerDead = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // Opcional: si quieres reiniciar la escena
+        if (!string.IsNullOrEmpty(Nivel))
             SceneManager.LoadScene(Nivel);
-        }
-    }
-
-    private void UpdateHealthUI()
-    {
-        UpdateHealthText();
-        UpdateHealthImageColor();
-    }
-
-    private void UpdateHealthText()
-    {
-        int healthPercentage = Mathf.RoundToInt((float)currentHealth / maxHealth * 100);
-        healthText.text = healthPercentage + "%";
-    }
-
-    private void UpdateHealthImageColor()
-    {
-        float healthRatio = (float)currentHealth / maxHealth;
-
-        if (healthRatio > 0.5f)
-            healthImage.color = Color.Lerp(healthColorMiddle, healthColorMax, (healthRatio - 0.5f) * 2f);
-        else if (healthRatio > 0.25f)
-            healthImage.color = Color.Lerp(healthColorMin, healthColorMiddle, (healthRatio - 0.25f) * 4f);
-        else
-            healthImage.color = healthColorMin;
-
-        healthText.color = healthImage.color;
     }
 
     private IEnumerator ShowBloodSplatter()
@@ -113,18 +86,27 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    private void Die()
+    private void UpdateHealthUI()
     {
-        isPlayerDead = true;
-        playerAnimations?.SetDeath();
-        playerAnimations?.ResetRigWeights();
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        Time.timeScale = 0f;
+        int healthPercentage = Mathf.RoundToInt((float)currentHealth / maxHealth * 100);
+        healthText.text = healthPercentage + "%";
+
+        float healthRatio = (float)currentHealth / maxHealth;
+        if (healthRatio > 0.5f)
+            healthImage.color = Color.Lerp(healthColorMiddle, healthColorMax, (healthRatio - 0.5f) * 2f);
+        else if (healthRatio > 0.25f)
+            healthImage.color = Color.Lerp(healthColorMin, healthColorMiddle, (healthRatio - 0.25f) * 4f);
+        else
+            healthImage.color = healthColorMin;
+
+        healthText.color = healthImage.color;
     }
 
+    // Método público para que otros scripts puedan chequear si el jugador está muerto
     public bool IsPlayerDead()
     {
         return isPlayerDead;
     }
 }
+
+

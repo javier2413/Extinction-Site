@@ -65,6 +65,10 @@ public class PlayerController : MonoBehaviour
         HandleCrouch();
         HandleFlashlightToggle();
         HandleInteract();
+        if (Input.GetKeyDown(KeyCode.R) && flashlightSystem != null)
+        {
+            flashlightSystem.RechargeBattery();
+        }
     }
 
     void GatherInput()

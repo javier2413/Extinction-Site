@@ -2,8 +2,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+[RequireComponent(typeof(CanvasGroup))]
+public class InventoryItem : MonoBehaviour,
+    IPointerEnterHandler, IPointerExitHandler,
+    IBeginDragHandler, IDragHandler, IEndDragHandler,
+    IPointerClickHandler
 {
     [Header("Item Settings")]
     public string itemId;
@@ -12,6 +17,9 @@ public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     [Header("Amount Settings")]
     public TMP_Text amountText;
+
+    [Header("Context Menu")]
+    public GameObject contextMenuPrefab; // Asigna tu prefab aquí
 
     private CanvasGroup canvasGroup;
     private Vector2 offset;
@@ -23,19 +31,21 @@ public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [Header("Spawn Point")]
     public Transform spawnPoint;
 
-    public void SetDatabaseItem(ItemDatabase.Item item)
-    {
-        this.databaseItem = item;
-    }
+    private static GameObject currentContextMenu;
+    private static InventoryItem currentItemWithMenu;
 
-    public ItemDatabase.Item GetDatabaseItem()
-    {
-        return this.databaseItem;
-    }
+    public void SetDatabaseItem(ItemDatabase.Item item) => databaseItem = item;
+    public ItemDatabase.Item GetDatabaseItem() => databaseItem;
+    public void SetInteractiveItem(InteractiveItem item) => interactiveItem = item;
+    public InteractiveItem GetInteractiveItem() => interactiveItem;
 
     private void Start()
     {
-        InitializeSlot();
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (!canvasGroup) Debug.LogError("CanvasGroup missing on InventoryItem");
+
+        amountText = GetComponentInChildren<TMP_Text>();
+        UpdateAmountText();
     }
 
     private void Update()
@@ -43,32 +53,9 @@ public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         UpdateAmountText();
     }
 
-    public void SetInteractiveItem(InteractiveItem item)
-    {
-        this.interactiveItem = item;
-    }
-
-    public InteractiveItem GetInteractiveItem()
-    {
-        return this.interactiveItem;
-    }
-
-    private void InitializeSlot()
-    {
-        canvasGroup = GetComponent<CanvasGroup>();
-        if (canvasGroup == null)
-        {
-            Debug.LogError("CanvasGroup not found on ItemSlot");
-        }
-
-        amountText = GetComponentInChildren<TMP_Text>();
-
-        UpdateAmountText();
-    }
-
     public void UpdateAmountText()
     {
-        if (amountText != null)
+        if (amountText != null && interactiveItem != null)
         {
             amountText.text = interactiveItem.GetStringCount();
             amountText.gameObject.SetActive(true);
@@ -78,57 +65,37 @@ public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (InventorySystem.instance != null)
-        {
-            var resultItemDescrition = string.IsNullOrEmpty(itemDescription) ? string.Empty : itemDescription;
-            InventorySystem.instance.UpdateItemDescription(resultItemDescrition);
-        }
+            InventorySystem.instance.UpdateItemDescription(itemDescription ?? string.Empty);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (InventorySystem.instance != null)
-        {
             InventorySystem.instance.UpdateItemDescription(string.Empty);
-        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (canvasGroup == null)
-        {
-            return;
-        }
-        originalParent = this.transform.parent;
-        Vector2 offset2D = eventData.position - new Vector2(this.transform.position.x, this.transform.position.y);
-        offset = offset2D;
-        canvasGroup.alpha = 0.2f;
+        originalParent = transform.parent;
+        offset = eventData.position - (Vector2)transform.position;
+        canvasGroup.alpha = 0.6f;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (canvasGroup == null) return;
-        offset = eventData.position - (Vector2)this.transform.position;
-        this.transform.position = eventData.position - offset;
+        transform.position = eventData.position - offset;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (canvasGroup == null) return;
         canvasGroup.alpha = 1f;
-
         Transform targetSlot = FindFreeTargetSlot();
-
         if (targetSlot == null)
-        {
-            this.transform.SetParent(originalParent);
-            this.transform.localPosition = Vector3.zero;
-        }
+            transform.SetParent(originalParent);
         else
-        {
-            this.transform.SetParent(targetSlot);
-            this.transform.localPosition = Vector3.zero;
-            this.transform.SetAsLastSibling();
-        }
+            transform.SetParent(targetSlot);
+        transform.localPosition = Vector3.zero;
+        transform.SetAsLastSibling();
     }
 
     private Transform FindFreeTargetSlot()
@@ -140,15 +107,53 @@ public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         var results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, results);
 
-        foreach (RaycastResult result in results)
+        foreach (var result in results)
         {
-            var hitObject = result.gameObject;
-
-            if (hitObject.CompareTag("InventorySlot") && !InventorySystem.instance.IsSlotOccupied(hitObject))
+            if (result.gameObject.CompareTag("InventorySlot") &&
+                !InventorySystem.instance.IsSlotOccupied(result.gameObject))
             {
-                return hitObject.transform;
+                return result.gameObject.transform;
             }
         }
         return null;
+    }
+
+    // ===== CLIC DERECHO PARA CONTEXT MENU =====
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (currentContextMenu != null)
+            {
+                Destroy(currentContextMenu);
+                currentContextMenu = null;
+                currentItemWithMenu = null;
+            }
+            else if (contextMenuPrefab != null)
+            {
+                currentContextMenu = Instantiate(contextMenuPrefab, transform.root);
+                currentContextMenu.transform.position = transform.position;
+                currentContextMenu.transform.SetParent(transform.root, false);
+                currentItemWithMenu = this;
+
+                // Configura los botones del menú
+                Button useButton = currentContextMenu.transform.Find("UseButton").GetComponent<Button>();
+                Button dropButton = currentContextMenu.transform.Find("DropButton").GetComponent<Button>();
+
+                useButton.onClick.AddListener(() => {
+                    interactiveItem?.UseInInventory();
+                    Destroy(currentContextMenu);
+                    currentContextMenu = null;
+                    currentItemWithMenu = null;
+                });
+
+                dropButton.onClick.AddListener(() => {
+                    interactiveItem?.DropFromInventory();
+                    Destroy(currentContextMenu);
+                    currentContextMenu = null;
+                    currentItemWithMenu = null;
+                });
+            }
+        }
     }
 }

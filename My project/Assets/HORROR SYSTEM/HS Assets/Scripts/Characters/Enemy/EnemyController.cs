@@ -70,7 +70,6 @@ public class EnemyController : MonoBehaviour
                 if (!isRoaring)
                 {
                     isRoaring = true;
-                    enemyAnimations.Roar();
 
                     // Stop movement during roar
                     navAgent.isStopped = true;
@@ -84,7 +83,6 @@ public class EnemyController : MonoBehaviour
             {
                 navAgent.isStopped = true;
                 enemyAnimations.StopWalking();
-                enemyAnimations.Roar();
                 isAttacking = true;
                 Invoke("FinishAttack", 2.2f);
             }
