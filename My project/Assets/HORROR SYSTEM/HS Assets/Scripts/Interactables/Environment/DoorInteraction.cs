@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class DoorInteraction : InteractiveObject
 {
+    [Header("Door Settings")]
     public Animator doorAnimator;
 
     [Space]
@@ -13,34 +14,46 @@ public class DoorInteraction : InteractiveObject
     public string doorOpenSound;
     public string doorCloseSound;
 
-    protected bool isDoorOpen = false;
-
-    private bool isFirstInteraction = true;
+    private bool isDoorOpen = false;
+    private bool keyUsed = false; // tracks if key has been spent
 
     public override void Interact(GameObject player = null)
     {
-        var playerInventory = player.GetComponent<InventorySystem>();
+        var playerInventory = InventorySystem.instance;
 
-        if (needKey && isFirstInteraction)
-            CheckKeyPass(playerInventory);
+        if (needKey && !keyUsed)
+        {
+            TryUseKey(playerInventory);
+        }
         else
-            OpenClose(playerInventory);
+        {
+            ToggleDoor();
+        }
     }
 
-    private void CheckKeyPass(InventorySystem playerInventory)
+    private void TryUseKey(InventorySystem playerInventory)
     {
+        if (playerInventory == null)
+        {
+            Locked();
+            return;
+        }
+
         var keys = playerInventory.FindItemByType(ItemDatabase.Type.KEY);
+
         if (keys == null)
         {
             Locked();
             return;
         }
 
+        // Look for the correct key
         var correctKey = keys.Find(key => keyId.Equals(key.itemId));
         if (correctKey != null)
         {
-            OpenClose(playerInventory);
-            isFirstInteraction = false;
+            keyUsed = true; // mark the key as used
+            playerInventory.SpendSingleItem(keyId); // remove key
+            ToggleDoor();
         }
         else
         {
@@ -48,12 +61,15 @@ public class DoorInteraction : InteractiveObject
         }
     }
 
-    private void OpenClose(InventorySystem playerInventory)
+    private void ToggleDoor()
     {
         isDoorOpen = !isDoorOpen;
 
-        doorAnimator.SetBool("DoorOpen", isDoorOpen);
-        doorAnimator.SetBool("DoorClose", !isDoorOpen);
+        if (doorAnimator != null)
+        {
+            doorAnimator.SetBool("DoorOpen", isDoorOpen);
+            doorAnimator.SetBool("DoorClose", !isDoorOpen);
+        }
 
         if (isDoorOpen)
         {
@@ -63,16 +79,18 @@ public class DoorInteraction : InteractiveObject
         {
             AudioManager.instance.Play(doorCloseSound);
         }
-
-        if (needKey)
-        {
-            playerInventory.SpendSingleItem(keyId);
-        }
     }
 
     private void Locked()
     {
+        if (doorAnimator != null)
+        {
+            doorAnimator.SetTrigger("DoorLocked");
+        }
+
         AudioManager.instance.Play(doorLockedSound);
-        doorAnimator.SetTrigger("DoorLocked");
     }
 }
+
+
+

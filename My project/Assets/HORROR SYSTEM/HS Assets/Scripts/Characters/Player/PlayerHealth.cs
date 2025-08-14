@@ -1,13 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
-
     public string Nivel;
 
     [Header("Health Settings")]
@@ -30,126 +28,79 @@ public class PlayerHealth : MonoBehaviour
     public GameObject bloodSplatterCanvas;
     private Coroutine bloodCoroutine;
 
-    public GameObject GOCanvas;
-
     private bool isPlayerDead = false;
     private PlayerAnimations playerAnimations;
-    public AudioSource ambientAudio, enemysfx,senosmuere;
 
     private void Start()
     {
         playerAnimations = GetComponent<PlayerAnimations>();
-
         currentHealth = maxHealth;
-        UpdateHealthUI(currentHealth, maxHealth);
+        UpdateHealthUI();
     }
 
     public void Heal(int value)
     {
+        if (isPlayerDead) return;
+
         currentHealth += value;
-        if (currentHealth > maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
-        UpdateHealthText(currentHealth, maxHealth);
+        currentHealth = Mathf.Min(currentHealth, maxHealth);
+        UpdateHealthUI();
     }
 
     public void SetMaxHealth()
     {
+        if (isPlayerDead) return;
+
         currentHealth = maxHealth;
-        UpdateHealthUI(currentHealth, maxHealth);
+        UpdateHealthUI();
         AudioManager.instance.Play(treatmentSound);
     }
 
     public void TakeDamage(int damage)
     {
+        if (isPlayerDead) return;
+
         if (bloodCoroutine != null)
             StopCoroutine(bloodCoroutine);
 
         bloodCoroutine = StartCoroutine(ShowBloodSplatter());
 
-        if (isPlayerDead) return;
-
         currentHealth -= damage;
-        if (currentHealth < 0)
-        {
-            currentHealth = 0;
-        }
+        currentHealth = Mathf.Max(currentHealth, 0);
+
+        UpdateHealthUI();
 
         if (currentHealth <= 0)
         {
-            //Die();
+            Die();
             SceneManager.LoadScene(Nivel);
         }
-
-        UpdateHealthUI(currentHealth, maxHealth);
     }
 
-    public int GetMaxHealth()
+    private void UpdateHealthUI()
     {
-        return maxHealth;
+        UpdateHealthText();
+        UpdateHealthImageColor();
     }
 
-    public void Die()
+    private void UpdateHealthText()
     {
-        isPlayerDead = true;
-        playerAnimations.SetDeath();
-        playerAnimations.ResetRigWeights();
-
-        // Show Game Over canvas
-        if (GOCanvas != null)
-        {
-            ambientAudio.Stop();
-            enemysfx.Stop();
-            GOCanvas.SetActive(true);
-            senosmuere.Play();
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            Time.timeScale = 0f; // only use of u want to pause the game
-        }
-    }
-
-
-    public bool IsPlayerDead()
-    {
-        return isPlayerDead;
-    }
-
-    public void UpdateHealthUI(int currentHealth, int maxHealth)
-    {
-        UpdateHealthText(currentHealth, maxHealth);
-        UpdateHealthImageColor(currentHealth, maxHealth);
-    }
-
-    private void UpdateHealthText(int currentHealth, int maxHealth)
-    {
-        int healthPercentage = (int)Mathf.Round(((float)currentHealth / maxHealth) * 100);
+        int healthPercentage = Mathf.RoundToInt((float)currentHealth / maxHealth * 100);
         healthText.text = healthPercentage + "%";
     }
 
-    private void UpdateHealthImageColor(int currentHealth, int maxHealth)
+    private void UpdateHealthImageColor()
     {
-        int healthPercentage = (int)Mathf.Round(((float)currentHealth / maxHealth) * 100);
-        UpdateHealthTextColor(healthPercentage);
-    }
+        float healthRatio = (float)currentHealth / maxHealth;
 
-    private void UpdateHealthTextColor(int healthPercentage)
-    {
-        if (healthPercentage >= 50)
-        {
-            healthText.color = Color.Lerp(healthColorMax, healthColorMiddle, (50 - healthPercentage) / 50f);
-            healthImage.color = Color.Lerp(healthColorMax, healthColorMiddle, (50 - healthPercentage) / 50f);
-        }
-        else if (healthPercentage >= 25)
-        {
-            healthText.color = Color.Lerp(healthColorMiddle, healthColorMin, (25 - healthPercentage) / 25f);
-            healthImage.color = Color.Lerp(healthColorMiddle, healthColorMin, (25 - healthPercentage) / 25f);
-        }
+        if (healthRatio > 0.5f)
+            healthImage.color = Color.Lerp(healthColorMiddle, healthColorMax, (healthRatio - 0.5f) * 2f);
+        else if (healthRatio > 0.25f)
+            healthImage.color = Color.Lerp(healthColorMin, healthColorMiddle, (healthRatio - 0.25f) * 4f);
         else
-        {
-            healthText.color = healthColorMin;
             healthImage.color = healthColorMin;
-        }
+
+        healthText.color = healthImage.color;
     }
 
     private IEnumerator ShowBloodSplatter()
@@ -160,5 +111,20 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(3f);
             bloodSplatterCanvas.SetActive(false);
         }
+    }
+
+    private void Die()
+    {
+        isPlayerDead = true;
+        playerAnimations?.SetDeath();
+        playerAnimations?.ResetRigWeights();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Time.timeScale = 0f;
+    }
+
+    public bool IsPlayerDead()
+    {
+        return isPlayerDead;
     }
 }

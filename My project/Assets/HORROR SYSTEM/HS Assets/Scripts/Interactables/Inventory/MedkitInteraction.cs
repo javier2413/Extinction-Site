@@ -2,21 +2,22 @@ using UnityEngine;
 
 public class MedkitInteraction : InteractiveItem
 {
-    private PlayerHealth playerHealth;
-    private InventorySystem playerInventory;
-
     public override void Interact(GameObject player = null)
     {
         base.Interact(player);
 
-        this.playerHealth = player.GetComponent<PlayerHealth>();
-        this.playerInventory = player.GetComponent<InventorySystem>();
+        var playerInventory = InventorySystem.instance;
+        if (playerInventory == null)
+        {
+            Debug.LogWarning("InventorySystem instance not found.");
+            return;
+        }
 
-        var itemHasBeenAdded = playerInventory.AddItem(itemId, count, this);
+        bool itemHasBeenAdded = playerInventory.AddItem(itemId, count, this);
         if (itemHasBeenAdded)
         {
             AudioManager.instance.Play(pickUpSound);
-            Destroy(0);
+            Destroy(gameObject); // Destroy the medkit in the scene
         }
         else
         {
@@ -26,17 +27,36 @@ public class MedkitInteraction : InteractiveItem
 
     public override void UseInInventory()
     {
+        // Find the player dynamically
+        var player = GameObject.FindWithTag("Player");
+        if (player == null)
+        {
+            Debug.LogError("Player object not found in scene.");
+            return;
+        }
+
+        var playerHealth = player.GetComponent<PlayerHealth>();
+        if (playerHealth == null)
+        {
+            Debug.LogError("PlayerHealth component not found on player.");
+            return;
+        }
+
         if (playerHealth.currentHealth < playerHealth.maxHealth)
         {
-            playerHealth.SetMaxHealth();
-            playerInventory.SpendSingleItem(itemId);
+            playerHealth.SetMaxHealth(); // or Heal(amount) if you want partial healing
+            InventorySystem.instance.SpendSingleItem(itemId);
+            Debug.Log("Used medkit: Health restored.");
         }
-        Debug.Log("Maximum health");
+        else
+        {
+            Debug.Log("Maximum health reached, medkit not used.");
+        }
     }
 
     public override void DropFromInventory()
     {
-        playerInventory.DropItems(itemId, 1);
+        InventorySystem.instance.DropItems(itemId, 1);
     }
 
     public override string GetStringCount()
@@ -44,3 +64,5 @@ public class MedkitInteraction : InteractiveItem
         return count.ToString();
     }
 }
+
+

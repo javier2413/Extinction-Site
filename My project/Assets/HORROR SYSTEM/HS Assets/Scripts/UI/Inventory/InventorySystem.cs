@@ -31,22 +31,38 @@ public class InventorySystem : MonoBehaviour
     [Header("Spawn Point")]
     public Transform spawnPoint;
 
+
+    [System.Serializable]
+    public class InventorySaveData
+    {
+        public List<ItemSaveData> items = new List<ItemSaveData>();
+    }
+
+    [System.Serializable]
+    public class ItemSaveData
+    {
+        public string itemId;
+        public int count;
+    }
+
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
-            return;
         }
     }
+
 
     private void Start()
     {
         InitializeSlots();
+        LoadInventory();
     }
 
     private void InitializeSlots()
@@ -72,6 +88,12 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
+    public int GetFreeSlotCount()
+    {
+        if (slots == null) return 0;
+        return slots.Count(slot => !IsSlotOccupied(slot));
+    }
+
     public void UpdateInventoryUI()
     {
         ContextMenu.HideContextMenu();
@@ -86,28 +108,113 @@ public class InventorySystem : MonoBehaviour
         });
     }
 
+
+
+    public void SaveInventory()
+    {
+        var saveData = new InventorySaveData();
+
+        foreach (var slot in slots)
+        {
+            var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
+            if (inventoryItem != null)
+            {
+                var interactiveItem = inventoryItem.GetInteractiveItem();
+                if (interactiveItem != null && interactiveItem.count > 0)
+                {
+                    saveData.items.Add(new ItemSaveData()
+                    {
+                        itemId = inventoryItem.itemId,
+                        count = interactiveItem.count
+                    });
+                }
+            }
+        }
+
+        string json = JsonUtility.ToJson(saveData);
+        PlayerPrefs.SetString("SavedInventory", json);
+        PlayerPrefs.Save();
+        Debug.Log("Inventario guardado");
+    }
+
+
+    public void LoadInventory()
+    {
+        string json = PlayerPrefs.GetString("SavedInventory", "");
+        if (string.IsNullOrEmpty(json)) return;
+
+        var saveData = JsonUtility.FromJson<InventorySaveData>(json);
+        if (saveData == null || saveData.items == null) return;
+
+        // Limpia inventario actual
+        foreach (var slot in slots)
+        {
+            var item = slot.GetComponentInChildren<InventoryItem>();
+            if (item != null)
+            {
+                Destroy(item.gameObject);
+            }
+        }
+
+        foreach (var itemData in saveData.items)
+        {
+            var item = itemDatabase.GetItem(itemData.itemId);
+            if (item != null)
+            {
+                var interactiveItem = new InteractiveItem();
+                interactiveItem.count = itemData.count;
+                AddItem(item.id, itemData.count, interactiveItem);
+            }
+        }
+
+        UpdateInventoryUI();
+    }
+
+
     public bool AddItem(string itemId, int amountToAdd, InteractiveItem interactiveItem)
     {
-        ItemDatabase.Item item = itemDatabase.GetItem(itemId);
-        if (item == null)
+        if (amountToAdd <= 0)
         {
-            Debug.LogError($"The item with the ID '{itemId}' was not found in the database");
+            Debug.LogWarning("Cannot add zero or negative amount of an item.");
             return false;
         }
 
-        var slot = FindExistingItemSlot(itemId);
-        if (slot != null)
+        ItemDatabase.Item itemData = itemDatabase.GetItem(itemId);
+        if (itemData == null)
         {
-            UpdateExistingSlot(slot.transform, amountToAdd);
-            return true;
-        }
-        else if (amountToAdd > 0)
-        {
-            return PlaceItemInFreeSlot(item, amountToAdd, interactiveItem);
+            Debug.LogError($"Item with ID '{itemId}' not found in database.");
+            return false;
         }
 
-        return false;
+        // Check if item already exists in inventory
+        GameObject existingSlot = FindExistingItemSlot(itemId);
+        if (existingSlot != null)
+        {
+            UpdateExistingSlot(existingSlot.transform, amountToAdd);
+            UpdateInventoryUI();
+            return true;
+        }
+
+        // Check if there is a free slot
+        int freeSlots = GetFreeSlotCount();
+        if (freeSlots <= 0)
+        {
+            Debug.LogWarning($"No free inventory slot to add item '{itemId}'.");
+            return false;
+        }
+
+        // Place item in a free slot
+        bool placed = PlaceItemInFreeSlot(itemData, amountToAdd, interactiveItem);
+        if (!placed)
+        {
+            Debug.LogWarning($"Failed to place item '{itemId}' in a free slot, even though free slots exist.");
+            return false;
+        }
+
+        UpdateInventoryUI();
+        return true;
     }
+
 
     public void DeleteItem(string itemId)
     {

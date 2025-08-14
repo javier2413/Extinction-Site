@@ -2,36 +2,38 @@ using UnityEngine;
 
 public class KeyInteraction : InteractiveItem
 {
-    private InventorySystem playerInventory;
-
     public override void Interact(GameObject player = null)
     {
         base.Interact(player);
 
-        playerInventory = player.GetComponent<InventorySystem>();
-
-        if (playerInventory != null)
+        var playerInventory = InventorySystem.instance;
+        if (playerInventory == null)
         {
-            bool itemHasBeenAdded = playerInventory.AddItem(itemId, count, this);
-            if (itemHasBeenAdded)
-            {
-                AudioManager.instance.Play(pickUpSound);
-                Destroy(gameObject);  // Destroy the key object in the scene
-            }
-            else
-            {
-                FailurePickUp();
-            }
+            Debug.LogError("InventorySystem instance not found!");
+            return;
         }
-        else
+
+        // Force-add the key to inventory
+        bool itemAdded = playerInventory.AddItem(itemId, count, this);
+
+        if (itemAdded)
         {
-            Debug.LogWarning("Player does not have an InventorySystem component!");
+            Debug.Log("Key picked up: " + itemId);
+            AudioManager.instance.Play(pickUpSound);
+            Destroy(gameObject);
         }
     }
 
     public override void DropFromInventory()
     {
-        playerInventory.DropItems(itemId, 1);
+        InventorySystem.instance.DropItems(itemId, 1);
+    }
+
+    public override string GetStringCount()
+    {
+        return count.ToString();
     }
 }
+
+
 

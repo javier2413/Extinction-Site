@@ -1,13 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.InputSystem;
 
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Interaction Settings")]
     public float interactionDistance = 1.2f;
-    public string interactableTag = "Interactable";
 
     [Header("Interaction UI")]
     public Image interactionIcon;
@@ -20,7 +18,6 @@ public class PlayerInteraction : MonoBehaviour
     private GameObject currentObject;
     private Transform interactionPoint;
     private float interactionPointHeight = 1f;
-    public FlashlightSystem flashlightSystem;
 
     private void Start()
     {
@@ -35,72 +32,54 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
-        InputManager.instance.SetInteractionTriggered(false);
-        InputManager.instance.SetCrouchTriggered(false);
-
+        HandleInteraction();
         IconPoint();
-
-        //if (InventoryManager.instance.hasFlashlight && Input.GetKeyDown(KeyCode.F))
-        //{
-        //    flashlightSystem.ToggleFlashlight(!flashlightSystem.spotLight.enabled);
-        //}
-        //HandleInteraction();
-        //IconPoint();
     }
 
     private void HandleInteraction()
     {
         Collider[] hitColliders = Physics.OverlapSphere(interactionPoint.position, interactionDistance);
         Transform closestObject = null;
+        float minDistance = float.MaxValue;
 
-        if (hitColliders.Length > 0)
+        foreach (Collider collider in hitColliders)
         {
-            float minDistance = float.MaxValue;
-            foreach (Collider collider in hitColliders)
+            var interactable = collider.GetComponent<InteractiveObject>();
+            if (interactable == null) continue;
+
+            float distance = Vector3.Distance(interactionPoint.position, collider.transform.position);
+            if (distance < minDistance)
             {
-                if (!collider.CompareTag(interactableTag))
-                {
-                    continue;
-                }
-
-                float distance = Vector3.Distance(interactionPoint.position, collider.transform.position);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestObject = collider.transform;
-                }
+                minDistance = distance;
+                closestObject = collider.transform;
             }
+        }
 
-            if (InputManager.instance.InteractionTriggered && closestObject != null)
-            {
-                PickUpObject(closestObject.gameObject);
-                InputManager.instance.SetInteractionTriggered(false);
-            }
+        SetCurrentObject(closestObject != null ? closestObject.gameObject : null);
 
-            SetCurrentObject(closestObject != null ? closestObject.gameObject : null);
+        if (closestObject != null && Input.GetKeyDown(KeyCode.E))
+        {
+            PickUpObject(closestObject.gameObject);
         }
     }
 
     public void PickUpObject(GameObject objectToPick)
     {
-        var player = this.gameObject;
-        objectToPick.GetComponent<InteractiveObject>().Interact(player);
+        objectToPick.GetComponent<InteractiveObject>()?.Interact(gameObject);
     }
 
     private void IconPoint()
     {
-        if (currentObject != null)
-        {
-            Transform iconPoint = currentObject.transform.Find("IconPoint");
+        if (currentObject == null || interactionIcon == null || iconRectTransform == null || Camera.main == null)
+            return;
 
-            if (iconPoint != null)
-            {
-                Vector3 screenPos = Camera.main.WorldToScreenPoint(iconPoint.position);
-                iconRectTransform.position = screenPos;
-            }
-        }
+        Transform iconPoint = currentObject.transform.Find("IconPoint");
+        if (iconPoint == null)
+            return;
+
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(iconPoint.position);
+        iconRectTransform.position = screenPos;
     }
-
 
     public void SetCurrentObject(GameObject obj)
     {
@@ -111,9 +90,6 @@ public class PlayerInteraction : MonoBehaviour
 
     private void UpdateInteractionText()
     {
-        var interactionAction = InputManager.instance.playerControls.FindAction("Interaction");
-        string keyBinding = interactionAction.GetBindingDisplayString();
-
-        interactionText.text = currentObject != null ? $"Interact ({keyBinding})" : null;
+        interactionText.text = currentObject != null ? $"Interact (E)" : null;
     }
 }

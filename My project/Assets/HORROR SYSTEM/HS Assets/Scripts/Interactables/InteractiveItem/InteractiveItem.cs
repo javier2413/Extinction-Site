@@ -7,7 +7,7 @@ public interface IInteractable
     void Interact(GameObject player = null);
 }
 
-public class InteractiveItem : InteractiveObject, IInteractable
+public class InteractiveItem : InteractiveObject
 {
     public string itemId;
     public int count;
@@ -25,14 +25,29 @@ public class InteractiveItem : InteractiveObject, IInteractable
 
     protected void Start()
     {
+        if (InventorySystem.instance == null)
+        {
+            Debug.LogError("InventorySystem instance not found in scene. InteractiveItem cannot initialize properly.");
+            return;
+        }
+
         var database = InventorySystem.instance.itemDatabase;
+        if (database == null)
+        {
+            Debug.LogError("ItemDatabase not assigned in InventorySystem!");
+            return;
+        }
+
         var item = database.GetItem(itemId);
         if (item == null)
         {
             Debug.LogError("Item with ID " + itemId + " doesn't exist in Database");
+            return;
         }
+
         databaseItem = item;
     }
+
 
     protected void FailurePickUp()
     {
