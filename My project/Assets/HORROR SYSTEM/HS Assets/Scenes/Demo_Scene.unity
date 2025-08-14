@@ -9906,14 +9906,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.14901961}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.21568628}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: a78e312a1e4437c40ab1ccb0e6e02d0d, type: 3}
+  m_Texture: {fileID: 2800000, guid: 9f02bfdf595bd83419021c2c016157c8, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -20917,7 +20917,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1984450751
 Transform:
   m_ObjectHideFlags: 0
