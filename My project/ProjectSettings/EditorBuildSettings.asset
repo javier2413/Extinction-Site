@@ -9,14 +9,14 @@ EditorBuildSettings:
     path: Assets/HORROR SYSTEM/HS Assets/Scenes/Menu.unity
     guid: 9e82a0b9ab9501a4b82ab12eea02e492
   - enabled: 1
+    path: Assets/HORROR SYSTEM/HS Assets/Scenes/Isla.unity
+    guid: 390ed78454844c244a61ad7a86c47f42
+  - enabled: 1
     path: Assets/HORROR SYSTEM/HS Assets/Scenes/Demo_Scene.unity
     guid: d4c97781f44efb84db0822985041b934
   - enabled: 0
     path: Assets/HORROR SYSTEM/HS Assets/Scenes/Menu_Scene_Pack.unity
     guid: 52a9f99cc7778a54aab9b4a71039dfbf
-  - enabled: 1
-    path: Assets/HORROR SYSTEM/HS Assets/Scenes/GameOver.unity
-    guid: 2713b5c8488321d44b991ba8cf131134
   - enabled: 1
     path: Assets/HORROR SYSTEM/HS Assets/Scenes/Jaula del Trex.unity
     guid: 3ded96f23fce42a4b97701544bda30cf
@@ -26,5 +26,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/HORROR SYSTEM/HS Assets/Scenes/Victoria.unity
     guid: 95302effdc618974692115528fa24095
+  - enabled: 1
+    path: Assets/HORROR SYSTEM/HS Assets/Scenes/GameOver.unity
+    guid: 2713b5c8488321d44b991ba8cf131134
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 5394f581e496a94499b3f83cf9972e3b, type: 3}
