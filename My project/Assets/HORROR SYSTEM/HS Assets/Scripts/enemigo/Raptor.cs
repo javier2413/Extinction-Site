@@ -10,7 +10,6 @@ public class Raptor : MonoBehaviour
     public NavMeshAgent agent;
     public Rigidbody rb;
     public GameObject Player;
-    public GameObject GOCanvas;
     public float RadioDeteccion;
     public float AnguloFOV;
     public float VisionPerdida;
@@ -35,11 +34,16 @@ public class Raptor : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         playerHealth = GameObject.FindWithTag("Player").GetComponent<PlayerHealth>();
         agent.updateRotation = false;
+
+        // Play default looping animation (if not automatic)
+        if (animator) animator.Play("Idle"); // replace "Idle" with your looping animation name
+
         Patrol();
     }
 
     void Update()
     {
+        // If stunned, stop all movement
         if (isStunned)
         {
             agent.isStopped = true;
@@ -48,6 +52,7 @@ public class Raptor : MonoBehaviour
             return;
         }
 
+        // If the player is dead, stop chasing
         if (playerHealth != null && playerHealth.IsPlayerDead())
         {
             if (audioSource != null) audioSource.enabled = false;
@@ -55,14 +60,17 @@ public class Raptor : MonoBehaviour
             return;
         }
 
+        // Detect player
         if (Player) DetectarJugador();
 
+        // Chasing player
         if (SiguiendoJugador)
         {
             agent.destination = Player.transform.position;
             RotateTowardsPlayer();
-            if (animator) animator.SetBool("Walk", true);
+            agent.isStopped = false;
         }
+        // Patrolling
         else
         {
             if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
@@ -70,10 +78,9 @@ public class Raptor : MonoBehaviour
 
             agent.isStopped = false;
             RotateTowards(agent.velocity.normalized);
-            if (animator) animator.SetBool("Walk", agent.velocity.sqrMagnitude > 0.01f);
         }
 
-        // Rotación suave
+        // Smooth rotation based on movement
         if (agent.velocity.sqrMagnitude > 0.01f)
         {
             Vector3 moveDirection = agent.velocity.normalized;
@@ -142,14 +149,14 @@ public class Raptor : MonoBehaviour
 
         isStunned = true;
 
-        // Congela NavMesh + Rigidbody
+        // Freeze NavMesh + Rigidbody
         agent.isStopped = true;
         rb.velocity = Vector3.zero;
 
-        // Desconecta el seguimiento
+        // Stop chasing
         SiguiendoJugador = false;
 
-        // Desstun luego del tiempo
+        // Unstun after duration
         CancelInvoke(nameof(Unstun));
         Invoke(nameof(Unstun), duration);
 
