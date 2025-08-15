@@ -4013,7 +4013,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameLogo: {fileID: 1602530738}
   mainPanel: {fileID: 1735195195}
-  nextSceneName: Demo_Scene
+  nextSceneName: Isla
   changeSceneButton: {fileID: 274518835}
   settingsButton: {fileID: 687527095}
   exitGameButton: {fileID: 1961599783}
