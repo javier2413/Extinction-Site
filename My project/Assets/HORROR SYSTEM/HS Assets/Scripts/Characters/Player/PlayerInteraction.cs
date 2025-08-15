@@ -7,7 +7,7 @@ public class PlayerInteraction : MonoBehaviour
     public string interactableTag = "Interactable";
 
     [Header("UI")]
-    public GameObject interactionPanel; // Fixed panel on screen
+    public GameObject interactionPanel; // Fixed "Press E" panel
 
     private GameObject currentObject;
     private Transform interactionPoint;
@@ -28,6 +28,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         CheckForNearbyInteractables();
         HandleInteractionInput();
+        HandleInteractionPanelVisibility();
     }
 
     void CheckForNearbyInteractables()
@@ -49,10 +50,7 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
-        // Update current object and panel visibility
         currentObject = closest != null ? closest.gameObject : null;
-        if (interactionPanel != null)
-            interactionPanel.SetActive(currentObject != null);
     }
 
     void HandleInteractionInput()
@@ -62,21 +60,30 @@ public class PlayerInteraction : MonoBehaviour
             var interactive = currentObject.GetComponent<InteractiveObject>();
             if (interactive != null)
             {
-                interactive.Interact(gameObject);
+                interactive.Interact(gameObject); // Toggle the note panel
 
-                // If it's a note, make sure it sets the panel content
-                var note = currentObject.GetComponent<NoteInteraction>();
-                if (note != null)
-                {
-                    NoteManagerUI.instance.ToggleNote(note.notePanel);
-                    // or UIManager.instance.SetNotePanelActive(note.noteData);
-                }
+                // Hide the floating "Press E" panel immediately
+                if (interactionPanel != null)
+                    interactionPanel.SetActive(false);
             }
         }
     }
 
-    // Keep this empty for now so PlayerController can still call it
-    public void HandleInteract() { }
+    void HandleInteractionPanelVisibility()
+    {
+        if (interactionPanel == null)
+            return;
+
+        // Only show the panel if near an object AND no note is currently open
+        bool showPanel = currentObject != null;
+
+        if (NoteManagerUI.instance != null && NoteManagerUI.instance.IsNoteOpen())
+            showPanel = false;
+
+        interactionPanel.SetActive(showPanel);
+    }
+
+    public void HandleInteract() { } // Empty for compatibility
 }
 
 

@@ -3,6 +3,7 @@ using UnityEngine;
 public class NoteManagerUI : MonoBehaviour
 {
     public static NoteManagerUI instance;
+
     private GameObject currentNotePanel;
 
     void Awake()
@@ -11,21 +12,37 @@ public class NoteManagerUI : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    public void ToggleNote(GameObject notePanel)
+    // Open a note panel safely
+    public void OpenNote(GameObject notePanel)
     {
-        // Close previous panel if different
+        // Close previous note if different
         if (currentNotePanel != null && currentNotePanel != notePanel)
             currentNotePanel.SetActive(false);
 
-        bool isActive = !notePanel.activeSelf;
-        notePanel.SetActive(isActive);
-        currentNotePanel = isActive ? notePanel : null;
+        // Open the requested note
+        notePanel.SetActive(true);
+        currentNotePanel = notePanel;
+    }
+    public void SetCurrentNote(GameObject panel)
+{
+    currentNotePanel = panel;
+}
+
+    // Close current note
+    public void CloseCurrentNote()
+    {
+        if (currentNotePanel != null)
+        {
+            currentNotePanel.SetActive(false);
+            currentNotePanel = null;
+        }
     }
 
+    // Toggle current note (optional)
     public void ToggleCurrentNote()
     {
         if (currentNotePanel != null)
-            ToggleNote(currentNotePanel);
+            CloseCurrentNote();
     }
 
     public bool IsNoteOpen()
@@ -33,4 +50,3 @@ public class NoteManagerUI : MonoBehaviour
         return currentNotePanel != null;
     }
 }
-
