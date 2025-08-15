@@ -6,8 +6,8 @@ public class DoorInteraction : InteractiveObject
     public Animator doorAnimator;
 
     [Space]
-    public bool needKey;
-    public string keyId;
+    public bool needKey = false;
+    public string keyId; // the required key's ID
 
     [Space]
     public string doorLockedSound;
@@ -15,12 +15,13 @@ public class DoorInteraction : InteractiveObject
     public string doorCloseSound;
 
     private bool isDoorOpen = false;
-    private bool keyUsed = false; // tracks if key has been spent
+    private bool keyUsed = false; // has the key been spent?
 
     public override void Interact(GameObject player = null)
     {
         var playerInventory = InventorySystem.instance;
 
+        // If door requires a key and it hasn't been used
         if (needKey && !keyUsed)
         {
             TryUseKey(playerInventory);
@@ -49,10 +50,11 @@ public class DoorInteraction : InteractiveObject
 
         // Look for the correct key
         var correctKey = keys.Find(key => keyId.Equals(key.itemId));
+
         if (correctKey != null)
         {
-            keyUsed = true; // mark the key as used
-            playerInventory.SpendSingleItem(keyId); // remove key
+            keyUsed = true; // mark key as spent
+            playerInventory.SpendSingleItem(keyId); // remove key from inventory
             ToggleDoor();
         }
         else
@@ -71,24 +73,20 @@ public class DoorInteraction : InteractiveObject
             doorAnimator.SetBool("DoorClose", !isDoorOpen);
         }
 
-        if (isDoorOpen)
+        string soundToPlay = isDoorOpen ? doorOpenSound : doorCloseSound;
+        if (!string.IsNullOrEmpty(soundToPlay) && AudioManager.instance != null)
         {
-            AudioManager.instance.Play(doorOpenSound);
-        }
-        else
-        {
-            AudioManager.instance.Play(doorCloseSound);
+            AudioManager.instance.Play(soundToPlay);
         }
     }
 
     private void Locked()
     {
         if (doorAnimator != null)
-        {
             doorAnimator.SetTrigger("DoorLocked");
-        }
 
-        AudioManager.instance.Play(doorLockedSound);
+        if (!string.IsNullOrEmpty(doorLockedSound) && AudioManager.instance != null)
+            AudioManager.instance.Play(doorLockedSound);
     }
 }
 

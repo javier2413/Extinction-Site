@@ -1,37 +1,36 @@
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    public float interactionDistance = 1.2f;
-    public Image interactionIcon;
-    public TMP_Text interactionText;
-    public LayerMask obstacleLayer;
+    [Header("Interaction Settings")]
+    public float interactionDistance = 3f;
+    public string interactableTag = "Interactable";
+
+    [Header("UI")]
+    public GameObject interactionPanel; // Fixed panel on screen
 
     private GameObject currentObject;
     private Transform interactionPoint;
-    private RectTransform iconRectTransform;
     private float interactionPointHeight = 1f;
 
     void Start()
     {
+        // Create a point in front of the player for distance checks
         interactionPoint = new GameObject("InteractionPoint").transform;
         interactionPoint.SetParent(transform);
         interactionPoint.localPosition = new Vector3(0f, interactionPointHeight, 0f);
 
-        interactionIcon.gameObject.SetActive(false);
-        iconRectTransform = interactionIcon.GetComponent<RectTransform>();
-        interactionText.text = null;
+        if (interactionPanel != null)
+            interactionPanel.SetActive(false);
     }
 
     void Update()
     {
-        HandleInteractionCheck();
-        UpdateIconPosition();
+        CheckForNearbyInteractables();
+        HandleInteractionInput();
     }
 
-    void HandleInteractionCheck()
+    void CheckForNearbyInteractables()
     {
         Collider[] hits = Physics.OverlapSphere(interactionPoint.position, interactionDistance);
         Transform closest = null;
@@ -39,8 +38,8 @@ public class PlayerInteraction : MonoBehaviour
 
         foreach (Collider col in hits)
         {
-            var interactable = col.GetComponent<InteractiveObject>();
-            if (interactable == null) continue;
+            if (!col.CompareTag(interactableTag))
+                continue;
 
             float dist = Vector3.Distance(interactionPoint.position, col.transform.position);
             if (dist < minDist)
@@ -50,39 +49,36 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
-        SetCurrentObject(closest != null ? closest.gameObject : null);
+        // Update current object and panel visibility
+        currentObject = closest != null ? closest.gameObject : null;
+        if (interactionPanel != null)
+            interactionPanel.SetActive(currentObject != null);
+    }
 
-        if (closest != null && Input.GetKeyDown(KeyCode.E))
+    void HandleInteractionInput()
+    {
+        if (currentObject != null && Input.GetKeyDown(KeyCode.E))
         {
-            closest.GetComponent<InteractiveObject>()?.Interact(gameObject);
+            var interactive = currentObject.GetComponent<InteractiveObject>();
+            if (interactive != null)
+            {
+                interactive.Interact(gameObject);
+
+                // If it's a note, make sure it sets the panel content
+                var note = currentObject.GetComponent<NoteInteraction>();
+                if (note != null)
+                {
+                    NoteManagerUI.instance.ToggleNote(note.notePanel);
+                    // or UIManager.instance.SetNotePanelActive(note.noteData);
+                }
+            }
         }
     }
 
-    void SetCurrentObject(GameObject obj)
-    {
-        currentObject = obj;
-
-        // Si hay un panel de nota abierto, no mostrar icono
-        if (NoteManagerUI.instance.IsNoteOpen())
-        {
-            interactionIcon.gameObject.SetActive(false);
-            interactionText.text = null;
-            return;
-        }
-
-        interactionIcon.gameObject.SetActive(currentObject != null);
-        interactionText.text = currentObject != null ? "Interact (E)" : null;
-    }
-
-    void UpdateIconPosition()
-    {
-        if (currentObject == null || interactionIcon == null || iconRectTransform == null || Camera.main == null)
-            return;
-
-        Transform iconPoint = currentObject.transform.Find("IconPoint");
-        if (iconPoint == null) return;
-
-        iconRectTransform.position = Camera.main.WorldToScreenPoint(iconPoint.position);
-    }
+    // Keep this empty for now so PlayerController can still call it
+    public void HandleInteract() { }
 }
+
+
+
 

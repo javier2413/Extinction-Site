@@ -25,11 +25,7 @@ public class PlayerController : MonoBehaviour
     public float topClamp = 90f;
     public float bottomClamp = -90f;
 
-    [Header("Interaction")]
-    public float interactionDistance = 3f;
-    public LayerMask interactionLayer;
-    public GameObject pickUpCanvas;
-
+   
     [Header("Flashlight Settings")]
     public FlashlightSystem flashlightSystem;
 
@@ -134,16 +130,10 @@ public class PlayerController : MonoBehaviour
 
     void HandleInteract()
     {
-        if (!interactInput) return;
-
-        Ray ray = new Ray(playerCamera.position, playerCamera.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance, interactionLayer))
-        {
-            InteractiveObject interactable = hit.collider.GetComponent<InteractiveObject>();
-            if (interactable != null)
-                interactable.Interact(gameObject);
-        }
+      
+        
     }
+
 }
 
 

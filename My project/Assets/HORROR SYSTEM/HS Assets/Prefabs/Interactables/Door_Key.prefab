@@ -259,7 +259,10 @@ MonoBehaviour:
   count: 0
   pickUpSound: 
   failurePickUpSound: 
-  avalaibleInteractions: 0000000001000000
+  avalaibleInteractions: 00000000
+  audioSource: {fileID: 0}
+  keySound: {fileID: 0}
+  roughPickupSound: {fileID: 0}
 --- !u!1 &6277875286250780726
 GameObject:
   m_ObjectHideFlags: 0

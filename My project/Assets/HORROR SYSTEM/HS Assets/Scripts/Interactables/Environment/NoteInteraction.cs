@@ -2,19 +2,25 @@ using UnityEngine;
 
 public class NoteInteraction : InteractiveObject
 {
-    public string noteSound;
-    public GameObject notePanel;
+    [Header("Note Settings")]
+    public GameObject notePanel; // Assign the UI panel for this note
+    public string noteSound;     // Optional sound when opening the note
 
     public override void Interact(GameObject player = null)
     {
-        if (notePanel != null)
+        // Play the note sound
+        if (!string.IsNullOrEmpty(noteSound) && AudioManager.instance != null)
+        {
+            AudioManager.instance.Play(noteSound);
+        }
+
+        // Toggle this note panel via the NoteManagerUI
+        if (NoteManagerUI.instance != null && notePanel != null)
         {
             NoteManagerUI.instance.ToggleNote(notePanel);
-
-            if (notePanel.activeSelf && AudioManager.instance != null && !string.IsNullOrEmpty(noteSound))
-                AudioManager.instance.Play(noteSound);
         }
     }
 }
+
 
 

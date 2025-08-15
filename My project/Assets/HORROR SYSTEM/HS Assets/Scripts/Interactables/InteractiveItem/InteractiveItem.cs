@@ -51,7 +51,6 @@ public class InteractiveItem : InteractiveObject
 
     protected void FailurePickUp()
     {
-        UIManager.instance.ShowInventoryFullNotification();
         AudioManager.instance.Play(failurePickUpSound);
     }
 

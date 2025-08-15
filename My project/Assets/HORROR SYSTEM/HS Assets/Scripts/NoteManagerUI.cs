@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NoteManagerUI : MonoBehaviour
@@ -15,13 +13,19 @@ public class NoteManagerUI : MonoBehaviour
 
     public void ToggleNote(GameObject notePanel)
     {
-        // Cierra el panel anterior si hay uno distinto
+        // Close previous panel if different
         if (currentNotePanel != null && currentNotePanel != notePanel)
             currentNotePanel.SetActive(false);
 
         bool isActive = !notePanel.activeSelf;
         notePanel.SetActive(isActive);
         currentNotePanel = isActive ? notePanel : null;
+    }
+
+    public void ToggleCurrentNote()
+    {
+        if (currentNotePanel != null)
+            ToggleNote(currentNotePanel);
     }
 
     public bool IsNoteOpen()
