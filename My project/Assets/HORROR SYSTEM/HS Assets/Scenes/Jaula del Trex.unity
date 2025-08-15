@@ -1206,6 +1206,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa783ba7d2fe4b245bb59b522d09e8be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactionPanel: {fileID: 0}
+  eventSystem: {fileID: 0}
+  player: {fileID: 635427700}
+  inventoryManager: {fileID: 1365824860}
+  pausepanel: {fileID: 795521127}
 --- !u!4 &77008900
 Transform:
   m_ObjectHideFlags: 0
@@ -6410,6 +6415,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 630581308}
   m_CullTransparentMesh: 1
+--- !u!1 &635427700 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2669869151122010314, guid: 4da7a3379814f904eb57c4123823f31d, type: 3}
+  m_PrefabInstance: {fileID: 210081708}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &639099991
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13654,6 +13664,11 @@ CanvasRenderer:
 Transform:
   m_CorrespondingSourceObject: {fileID: 8890335935285775841, guid: 3d69f4e6ce4bc724a91e7659fac3336c, type: 3}
   m_PrefabInstance: {fileID: 1732805497}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1365824860 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 289375469788016082, guid: b6bbf7f369dea384bb90d497b4ccdef7, type: 3}
+  m_PrefabInstance: {fileID: 1594926530}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1372893379 stripped
 Transform:
